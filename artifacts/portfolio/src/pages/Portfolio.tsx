@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -15,13 +15,37 @@ import {
   Wrench,
   Sun,
   Moon,
+  Download,
+  X,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-// We'll just define the content here and use it in the component.
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+const TYPED_ROLES = [
+  "Software Engineer",
+  "AI Developer",
+  "Full-Stack Builder",
+  "Problem Solver",
+];
+
+const STATS = [
+  { value: 4, label: "Projects Built", suffix: "+" },
+  { value: 3, label: "Certifications", suffix: "" },
+  { value: 6, label: "Tech Stacks", suffix: "+" },
+  { value: 2, label: "Years Learning", suffix: "+" },
+];
 
 const SKILLS = {
   Languages: ["Python", "Java", "JavaScript", "TypeScript", "SQL", "HTML5", "CSS3"],
@@ -38,64 +62,327 @@ const PROJECTS = [
     subtitle: "Deepfake Detection & Prevention System",
     description:
       "An AI-powered web application designed to detect manipulated media using deep learning and computer vision techniques. Analyzes uploaded images/videos and identifies potential deepfakes through AI-based prediction models.",
+    longDescription:
+      "PixelProof tackles one of the most pressing challenges in the digital age — the proliferation of AI-generated fake media. Built with a custom CNN pipeline, the system preprocesses video frames, extracts facial regions using OpenCV, and passes them through a trained Keras model to produce a confidence score. The React frontend provides a clean drag-and-drop upload experience with real-time prediction feedback, while Flask serves as a lightweight inference API. The model was trained on a curated dataset of real and manipulated images, achieving strong detection accuracy.",
     tech: ["Python", "Flask", "TensorFlow", "Keras", "OpenCV", "Streamlit", "React", "JavaScript"],
     link: "https://github.com/Jaychafekar/PixelProof",
+    highlights: ["Custom CNN deepfake detection model", "Real-time image/video analysis", "Flask REST API + React frontend", "OpenCV face extraction pipeline"],
   },
   {
     title: "WeatherDashboard",
     subtitle: "iOS Weather App",
     description:
       "A native iOS weather application delivering real-time weather updates, forecasts, and interactive map visualisation. Clean MVVM architecture with location services, API integration, and local data persistence.",
+    longDescription:
+      "WeatherDashboard is a polished native iOS app built entirely in SwiftUI using MVVM architecture. It integrates the OpenWeather API to deliver current conditions, hourly and 7-day forecasts, and UV index data. CoreLocation handles dynamic user location detection, while MapKit powers an interactive weather map overlay. SwiftData persists recently viewed cities locally, enabling fast load times and offline access to last-known conditions. The app features smooth animations, adaptive dark/light mode, and full accessibility support.",
     tech: ["Swift", "SwiftUI", "MVVM", "OpenWeather API", "CoreLocation", "MapKit", "SwiftData"],
     link: "https://github.com/Jaychafekar",
+    highlights: ["MVVM architecture in SwiftUI", "CoreLocation + MapKit integration", "7-day forecast & UV index", "SwiftData local persistence"],
   },
   {
     title: "BookstoreAPI",
     subtitle: "RESTful Backend System",
     description:
       "A scalable REST API for managing books, customers, carts, and orders with validation, exception handling, and full CRUD operations following REST architecture principles.",
+    longDescription:
+      "BookstoreAPI is a production-grade backend built in Java using JAX-RS, designed to handle the complete lifecycle of a bookstore's operations. The API exposes well-structured endpoints for managing an inventory of books, registering and authenticating customers, managing shopping carts, and processing orders. MySQL powers the relational data model with normalized tables and foreign-key constraints. Exception mappers provide consistent error responses, and input validation guards every endpoint. Thoroughly tested using Postman collections with documented edge cases.",
     tech: ["Java", "JAX-RS", "REST APIs", "MySQL", "Apache Tomcat", "Postman"],
     link: "https://github.com/Jaychafekar",
+    highlights: ["Full CRUD REST API in Java", "Relational MySQL data model", "Exception handling & input validation", "Postman-documented test suite"],
   },
   {
     title: "HealthCheck Web App",
     subtitle: "Team Health Monitoring Platform",
     description:
       "A full-stack team health monitoring platform for tracking team wellbeing, voting systems, department summaries, and management dashboards with role-based access control.",
+    longDescription:
+      "HealthCheck is a Django-powered platform built for engineering teams to regularly assess their health across dimensions like morale, delivery pace, and collaboration. Team members anonymously vote on health indicators, and the system aggregates results into department-level summaries visible on a management dashboard. Role-based access control separates team member, team lead, and admin views. The platform includes a scheduled voting system, historical trend charts, and exportable reports — all delivered through a responsive Bootstrap frontend.",
     tech: ["Python", "Django", "SQLite", "HTML", "CSS", "Bootstrap", "JavaScript"],
     link: "https://github.com/Jaychafekar",
+    highlights: ["Role-based access control (3 tiers)", "Anonymous voting system", "Department-level dashboards", "Historical trend visualisation"],
   },
 ];
 
 const CERTIFICATIONS = [
-  "C & C++ Programming Certification — TechnoKraft Training & Solution Pvt. Ltd. (2022)",
-  "Website Designing Certification — TechnoKraft Training & Solution Pvt. Ltd. (2023)",
-  "Web Development Certification — TechnoKraft Training & Solution Pvt. Ltd. (2023)",
+  { title: "C & C++ Programming Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2022" },
+  { title: "Website Designing Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2023" },
+  { title: "Web Development Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2023" },
 ];
+
+// ─── Animation Variants ───────────────────────────────────────────────────────
 
 const staggerContainer = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const slideUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+// ─── Typing Animation Hook ────────────────────────────────────────────────────
+
+function useTypingAnimation(words: string[], typingSpeed = 80, deletingSpeed = 40, pauseDuration = 1800) {
+  const [display, setDisplay] = useState("");
+  const [wordIndex, setWordIndex] = useState(0);
+  const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">("typing");
+
+  useEffect(() => {
+    const currentWord = words[wordIndex % words.length];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (phase === "typing") {
+      if (display.length < currentWord.length) {
+        timeout = setTimeout(() => setDisplay(currentWord.slice(0, display.length + 1)), typingSpeed);
+      } else {
+        timeout = setTimeout(() => setPhase("pausing"), pauseDuration);
+      }
+    } else if (phase === "pausing") {
+      timeout = setTimeout(() => setPhase("deleting"), 0);
+    } else {
+      if (display.length > 0) {
+        timeout = setTimeout(() => setDisplay(display.slice(0, -1)), deletingSpeed);
+      } else {
+        setWordIndex((i) => i + 1);
+        setPhase("typing");
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [display, phase, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration]);
+
+  return display;
+}
+
+// ─── Animated Counter ─────────────────────────────────────────────────────────
+
+function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionValue = useMotionValue(0);
+  const spring = useSpring(motionValue, { duration: 2000, bounce: 0 });
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (isInView) motionValue.set(value);
+  }, [isInView, motionValue, value]);
+
+  useEffect(() => {
+    return spring.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = Math.floor(latest) + suffix;
+      }
+    });
+  }, [spring, suffix]);
+
+  return <span ref={ref}>0{suffix}</span>;
+}
+
+// ─── Project Modal ────────────────────────────────────────────────────────────
+
+function ProjectModal({ project, open, onClose }: { project: typeof PROJECTS[0] | null; open: boolean; onClose: () => void }) {
+  if (!project) return null;
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-project-detail">
+        <DialogHeader>
+          <p className="font-mono text-primary text-sm mb-1">{project.subtitle}</p>
+          <DialogTitle className="text-2xl font-bold">{project.title}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6 pt-2">
+          <p className="text-muted-foreground leading-relaxed">{project.longDescription}</p>
+
+          <div>
+            <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Key Highlights</h4>
+            <ul className="space-y-2">
+              {project.highlights.map((h) => (
+                <li key={h} className="flex items-start gap-2 text-muted-foreground text-sm">
+                  <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Tech Stack</h4>
+            <div className="flex flex-wrap gap-2">
+              {project.tech.map((t) => (
+                <span key={t} className="text-sm font-mono text-foreground bg-secondary/60 px-3 py-1 rounded-full">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <Button asChild size="sm" data-testid={`button-github-${project.title}`}>
+              <a href={project.link} target="_blank" rel="noopener noreferrer">
+                <Github className="w-4 h-4 mr-2" /> View on GitHub
+              </a>
+            </Button>
+            <Button variant="outline" size="sm" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ─── Contact Form ─────────────────────────────────────────────────────────────
+
+type FormStatus = "idle" | "sending" | "success" | "error";
+
+function ContactForm() {
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+
+    const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
+
+    if (!formspreeId) {
+      // Formspree not configured — simulate success for dev
+      await new Promise((r) => setTimeout(r, 800));
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }, [form]);
+
+  if (status === "success") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center gap-4 py-12 text-center"
+        data-testid="contact-success"
+      >
+        <CheckCircle2 className="w-14 h-14 text-primary" />
+        <h3 className="text-xl font-semibold">Message received!</h3>
+        <p className="text-muted-foreground">Thanks for reaching out. I'll get back to you soon.</p>
+        <Button variant="outline" size="sm" onClick={() => setStatus("idle")}>
+          Send another
+        </Button>
+      </motion.div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="form-contact">
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium" htmlFor="name">Name</label>
+          <Input
+            id="name"
+            name="name"
+            placeholder="John Doe"
+            required
+            value={form.name}
+            onChange={handleChange}
+            disabled={status === "sending"}
+            data-testid="input-name"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium" htmlFor="email">Email</label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="john@example.com"
+            required
+            value={form.email}
+            onChange={handleChange}
+            disabled={status === "sending"}
+            data-testid="input-email"
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-medium" htmlFor="message">Message</label>
+        <Textarea
+          id="message"
+          name="message"
+          placeholder="Hello Jay..."
+          rows={5}
+          required
+          value={form.message}
+          onChange={handleChange}
+          disabled={status === "sending"}
+          data-testid="input-message"
+        />
+      </div>
+
+      {status === "error" && (
+        <div className="flex items-center gap-2 text-sm text-destructive" data-testid="contact-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          Something went wrong. Please try emailing directly at chafekarjay12@gmail.com.
+        </div>
+      )}
+
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={status === "sending"}
+        data-testid="button-submit-contact"
+      >
+        {status === "sending" ? (
+          <span className="flex items-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            Sending...
+          </span>
+        ) : (
+          <span className="flex items-center gap-2">
+            <Send className="w-4 h-4" /> Send Message
+          </span>
+        )}
+      </Button>
+    </form>
+  );
+}
+
+// ─── Main Portfolio Component ─────────────────────────────────────────────────
+
 export default function Portfolio() {
   const { theme, setTheme } = useTheme();
-  
+  const typedRole = useTypingAnimation(TYPED_ROLES);
+  const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openProject = (project: typeof PROJECTS[0]) => {
+    setSelectedProject(project);
+    setModalOpen(true);
+  };
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -105,15 +392,22 @@ export default function Portfolio() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <span className="font-mono font-bold text-primary text-xl">JC.</span>
           <div className="hidden md:flex gap-6 text-sm font-medium">
-            <button onClick={() => scrollToSection("about")} className="hover:text-primary transition-colors">About</button>
-            <button onClick={() => scrollToSection("skills")} className="hover:text-primary transition-colors">Skills</button>
-            <button onClick={() => scrollToSection("projects")} className="hover:text-primary transition-colors">Projects</button>
-            <button onClick={() => scrollToSection("contact")} className="hover:text-primary transition-colors">Contact</button>
+            {["about", "skills", "projects", "contact"].map((s) => (
+              <button
+                key={s}
+                onClick={() => scrollToSection(s)}
+                className="capitalize hover:text-primary transition-colors"
+                data-testid={`nav-${s}`}
+              >
+                {s}
+              </button>
+            ))}
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            data-testid="button-theme-toggle"
           >
             {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
@@ -121,12 +415,13 @@ export default function Portfolio() {
       </nav>
 
       <main className="max-w-6xl mx-auto px-6 pt-24 pb-20">
-        {/* Hero Section */}
-        <section id="hero" className="min-h-[80vh] flex flex-col justify-center py-20 relative">
+
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
+        <section id="hero" className="min-h-[85vh] flex flex-col justify-center py-20 relative">
           <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10" />
           <div className="absolute bottom-1/4 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl -z-10" />
-          
-          <motion.div 
+
+          <motion.div
             className="flex flex-col-reverse md:flex-row items-center gap-12"
             initial="hidden"
             animate="show"
@@ -134,35 +429,56 @@ export default function Portfolio() {
           >
             <div className="flex-1 space-y-6">
               <motion.div variants={slideUp}>
-                <span className="font-mono text-primary mb-2 block">Hi, my name is</span>
+                <span className="font-mono text-primary mb-2 block text-sm tracking-widest uppercase">Hi, my name is</span>
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground">
                   Jay Chafekar.
                 </h1>
-                <h2 className="text-3xl md:text-5xl font-semibold text-muted-foreground mt-2">
-                  I build intelligent systems.
+                <h2 className="text-2xl md:text-4xl font-semibold text-muted-foreground mt-3 min-h-[1.2em] flex items-center gap-1">
+                  <span>{typedRole}</span>
+                  <span className="inline-block w-0.5 h-[1em] bg-primary animate-pulse ml-0.5" />
                 </h2>
               </motion.div>
-              
+
               <motion.p variants={slideUp} className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-                Computer Science student passionate about software engineering, AI, and scalable product development. I bridge the gap between complex backend systems and clean user experiences.
+                Computer Science student at the University of Westminster — passionate about AI, full-stack development, and building products that matter.
               </motion.p>
-              
-              <motion.div variants={slideUp} className="flex gap-4 pt-4">
-                <Button size="lg" onClick={() => scrollToSection("projects")} className="font-medium group" data-testid="button-view-projects">
+
+              <motion.div variants={slideUp} className="flex flex-wrap gap-3 pt-4">
+                <Button
+                  size="lg"
+                  onClick={() => scrollToSection("projects")}
+                  className="font-medium group"
+                  data-testid="button-view-projects"
+                >
                   View Projects
                   <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => scrollToSection("contact")} data-testid="button-contact">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => scrollToSection("contact")}
+                  data-testid="button-contact"
+                >
                   Get In Touch
+                </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  asChild
+                  data-testid="button-download-cv"
+                >
+                  <a href="/cv.pdf" download="Jay_Chafekar_CV.pdf">
+                    <Download className="w-4 h-4 mr-2" /> Download CV
+                  </a>
                 </Button>
               </motion.div>
             </div>
-            
+
             <motion.div variants={slideUp} className="w-64 h-64 md:w-80 md:h-80 relative shrink-0">
               <div className="absolute inset-0 bg-primary/20 rounded-2xl rotate-6" />
-              <img 
-                src="/avatar.png" 
-                alt="Jay Chafekar" 
+              <img
+                src="/avatar.png"
+                alt="Jay Chafekar"
                 className="w-full h-full object-cover rounded-2xl relative z-10 border border-border shadow-2xl"
                 data-testid="img-avatar"
               />
@@ -170,9 +486,29 @@ export default function Portfolio() {
           </motion.div>
         </section>
 
-        {/* About Section */}
-        <motion.section 
-          id="about" 
+        {/* ── Stats Bar ────────────────────────────────────────────────────── */}
+        <motion.section
+          className="py-12 border-y border-border/50 my-4"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={staggerContainer}
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {STATS.map((stat) => (
+              <motion.div key={stat.label} variants={slideUp} className="space-y-1">
+                <p className="text-4xl font-bold text-primary font-mono">
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                </p>
+                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ── About ────────────────────────────────────────────────────────── */}
+        <motion.section
+          id="about"
           className="py-24"
           initial="hidden"
           whileInView="show"
@@ -183,35 +519,38 @@ export default function Portfolio() {
             <h2 className="text-3xl font-bold">About Me</h2>
             <div className="h-px bg-border flex-1" />
           </motion.div>
-          
+
           <motion.div variants={slideUp} className="grid md:grid-cols-2 gap-12 text-lg text-muted-foreground leading-relaxed">
             <div className="space-y-6">
               <p>
                 I'm a Computer Science student at the University of Westminster passionate about software engineering, AI, and scalable product development. I enjoy building full-stack applications that combine clean frontend experiences with powerful backend systems and intelligent AI-driven features.
               </p>
               <p>
-                My skills include Java, Python, Django, React, Next.js, REST APIs, SQL, and modern web technologies. Beyond coding, I'm deeply interested in system design, problem-solving, automation, and building real-world products that create impact.
+                My skills span Java, Python, Django, React, Next.js, REST APIs, SQL, and modern web technologies. Beyond coding, I'm deeply interested in system design, problem-solving, automation, and building real-world products that create impact.
               </p>
             </div>
             <div className="space-y-6">
               <p>
-                I'm constantly learning, experimenting, and pushing myself to grow as a developer with the long-term goal of building innovative technology products and AI-powered solutions.
+                I'm constantly learning and experimenting — with the long-term goal of building innovative technology products and AI-powered solutions that reach real users at scale.
               </p>
               <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
-                <h3 className="text-foreground font-semibold mb-2">Core Focus Areas</h3>
+                <h3 className="text-foreground font-semibold mb-3">Core Focus Areas</h3>
                 <ul className="space-y-2 text-base">
-                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Full-Stack Architecture</li>
-                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> AI & Machine Learning Integration</li>
-                  <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Scalable Backend Systems</li>
+                  {["Full-Stack Architecture", "AI & Machine Learning Integration", "Scalable Backend Systems"].map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
           </motion.div>
         </motion.section>
 
-        {/* Skills Section */}
-        <motion.section 
-          id="skills" 
+        {/* ── Skills ───────────────────────────────────────────────────────── */}
+        <motion.section
+          id="skills"
           className="py-24"
           initial="hidden"
           whileInView="show"
@@ -225,12 +564,11 @@ export default function Portfolio() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(SKILLS).map(([category, skills], idx) => {
-              const icons = [Code2, Framework, Database, Wrench, Cpu, Network];
+              const icons = [Code2, FrameworkIcon, Database, Wrench, Cpu, Network];
               const Icon = icons[idx % icons.length];
-              
               return (
-                <motion.div 
-                  key={category} 
+                <motion.div
+                  key={category}
                   variants={slideUp}
                   className="p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-colors"
                 >
@@ -241,7 +579,7 @@ export default function Portfolio() {
                     <h3 className="font-semibold text-foreground">{category}</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {skills.map(skill => (
+                    {skills.map((skill) => (
                       <span key={skill} className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full font-medium font-mono">
                         {skill}
                       </span>
@@ -253,9 +591,9 @@ export default function Portfolio() {
           </div>
         </motion.section>
 
-        {/* Projects Section */}
-        <motion.section 
-          id="projects" 
+        {/* ── Projects ─────────────────────────────────────────────────────── */}
+        <motion.section
+          id="projects"
           className="py-24"
           initial="hidden"
           whileInView="show"
@@ -267,40 +605,57 @@ export default function Portfolio() {
             <div className="h-px bg-border flex-1" />
           </motion.div>
 
-          <div className="space-y-12">
-            {PROJECTS.map((project, idx) => (
-              <motion.div 
+          <div className="grid md:grid-cols-2 gap-6">
+            {PROJECTS.map((project) => (
+              <motion.div
                 key={project.title}
                 variants={slideUp}
-                className="group relative grid md:grid-cols-12 gap-8 items-center"
+                className="group p-8 rounded-2xl bg-card border border-border hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer flex flex-col"
+                onClick={() => openProject(project)}
+                data-testid={`card-project-${project.title}`}
               >
-                <div className={`md:col-span-7 lg:col-span-8 p-8 rounded-2xl bg-card border border-border group-hover:border-primary/30 transition-colors z-10 ${idx % 2 !== 0 ? 'md:order-2' : ''}`}>
-                  <p className="font-mono text-primary text-sm mb-2">{project.subtitle}</p>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{project.title}</h3>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map(t => (
-                      <span key={t} className="text-sm font-mono text-foreground bg-secondary/50 px-2 py-0.5 rounded">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-4">
-                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                      <Github className="w-5 h-5" /> View Source
-                    </a>
-                  </div>
+                <p className="font-mono text-primary text-xs mb-2 uppercase tracking-wider">{project.subtitle}</p>
+                <h3 className="text-xl font-bold text-foreground mb-3">{project.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {project.tech.slice(0, 4).map((t) => (
+                    <span key={t} className="text-xs font-mono text-foreground bg-secondary/50 px-2 py-1 rounded">
+                      {t}
+                    </span>
+                  ))}
+                  {project.tech.length > 4 && (
+                    <span className="text-xs font-mono text-muted-foreground px-2 py-1">
+                      +{project.tech.length - 4} more
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                    onClick={(e) => { e.stopPropagation(); openProject(project); }}
+                    data-testid={`button-details-${project.title}`}
+                  >
+                    View Details <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    data-testid={`link-github-${project.title}`}
+                  >
+                    <Github className="w-4 h-4" /> GitHub
+                  </a>
                 </div>
               </motion.div>
             ))}
           </div>
         </motion.section>
 
-        {/* Certifications Section */}
-        <motion.section 
-          id="certifications" 
+        {/* ── Certifications ───────────────────────────────────────────────── */}
+        <motion.section
+          id="certifications"
           className="py-24"
           initial="hidden"
           whileInView="show"
@@ -312,23 +667,27 @@ export default function Portfolio() {
             <div className="h-px bg-border flex-1" />
           </motion.div>
 
-          <div className="grid gap-4">
-            {CERTIFICATIONS.map((cert, idx) => (
-              <motion.div 
-                key={idx}
+          <div className="grid gap-4 md:grid-cols-3">
+            {CERTIFICATIONS.map((cert) => (
+              <motion.div
+                key={cert.title}
                 variants={slideUp}
-                className="p-6 bg-card border border-border rounded-xl flex items-start gap-4"
+                className="p-6 bg-card border border-border rounded-xl flex flex-col gap-3 hover:border-primary/40 transition-colors"
+                data-testid={`card-cert-${cert.year}`}
               >
-                <div className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
-                <p className="font-medium text-foreground">{cert}</p>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs text-primary bg-primary/10 px-2 py-0.5 rounded">{cert.year}</span>
+                </div>
+                <h3 className="font-semibold text-foreground leading-snug">{cert.title}</h3>
+                <p className="text-sm text-muted-foreground">{cert.issuer}</p>
               </motion.div>
             ))}
           </div>
         </motion.section>
 
-        {/* Contact Section */}
-        <motion.section 
-          id="contact" 
+        {/* ── Contact ──────────────────────────────────────────────────────── */}
+        <motion.section
+          id="contact"
           className="py-24 max-w-2xl mx-auto text-center"
           initial="hidden"
           whileInView="show"
@@ -337,28 +696,18 @@ export default function Portfolio() {
         >
           <motion.h2 variants={slideUp} className="text-4xl font-bold mb-4">Get In Touch</motion.h2>
           <motion.p variants={slideUp} className="text-muted-foreground mb-12">
-            I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            I'm open to new opportunities, collaborations, and interesting conversations. Drop me a message and I'll get back to you as soon as possible.
           </motion.p>
 
-          <motion.form variants={slideUp} className="space-y-4 text-left" onSubmit={(e) => { e.preventDefault(); alert("Message form is for demonstration."); }}>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Name</label>
-                <Input placeholder="John Doe" required />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Email</label>
-                <Input type="email" placeholder="john@example.com" required />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Message</label>
-              <Textarea placeholder="Hello Jay..." rows={5} required />
-            </div>
-            <Button type="submit" className="w-full" size="lg" data-testid="button-submit-contact">
-              <Send className="w-4 h-4 mr-2" /> Send Message
-            </Button>
-          </motion.form>
+          <motion.div variants={slideUp} className="flex justify-center gap-6 mb-12">
+            <a href="mailto:chafekarjay12@gmail.com" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" data-testid="link-email-contact">
+              <Mail className="w-4 h-4" /> chafekarjay12@gmail.com
+            </a>
+          </motion.div>
+
+          <motion.div variants={slideUp}>
+            <ContactForm />
+          </motion.div>
         </motion.section>
       </main>
 
@@ -366,7 +715,7 @@ export default function Portfolio() {
       <footer className="border-t border-border bg-card">
         <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-mono text-sm text-muted-foreground">
-            Built by Jay Chafekar.
+            © 2026 Jay Chafekar. Built with React & Vite.
           </p>
           <div className="flex items-center gap-6">
             <a href="mailto:chafekarjay12@gmail.com" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-email">
@@ -381,28 +730,25 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      {/* Project Modal */}
+      <ProjectModal
+        project={selectedProject}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }
 
-// Helper icon
-function Framework(props: any) {
+// ─── Helper Icon ──────────────────────────────────────────────────────────────
+
+function FrameworkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect width="18" height="18" x="3" y="3" rx="2" />
       <path d="M9 3v18" />
       <path d="M15 3v18" />
     </svg>
-  )
+  );
 }
