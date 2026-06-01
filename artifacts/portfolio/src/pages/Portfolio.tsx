@@ -460,10 +460,10 @@ export default function Portfolio() {
 
             <div className="flex items-start gap-10 mb-8">
               {[
-                { val: "+2", label: "YEARS OF\nEXPERIENCE" },
-                { val: "+6", label: "PROJECTS\nCOMPLETED" },
+                { val: "3", label: "YEARS OF\nSTUDY" },
+                { val: "4", label: "PROJECTS\nCOMPLETED" },
                 { val: "2", label: "COMPANIES\nWORKED AT" },
-                { val: "+4", label: "CERTS\nEARNED" },
+                { val: "2:1", label: "PREDICTED\nDEGREE" },
               ].map(({ val, label }) => (
                 <div key={label}>
                   <div className="font-black text-4xl text-white leading-none">{val}</div>
@@ -476,7 +476,7 @@ export default function Portfolio() {
               <div className="bg-primary rounded-2xl p-5 relative group overflow-hidden transition-transform hover:-translate-y-1 min-h-[110px]">
                 <Layers className="w-6 h-6 text-white/80 mb-3" />
                 <p className="text-white font-black text-xs tracking-widest leading-relaxed uppercase">
-                  TYPESCRIPT · REACT ·<br/>NODE.JS · PYTHON
+                  PYTHON · DJANGO ·<br/>FASTAPI · REACT
                 </p>
                 <div className="absolute bottom-4 right-4 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary transition-colors">
                   <ArrowUpRight className="w-4 h-4" />
@@ -485,7 +485,7 @@ export default function Portfolio() {
               <div className="bg-[#C2FF3D] rounded-2xl p-5 relative group overflow-hidden transition-transform hover:-translate-y-1 min-h-[110px]">
                 <LayoutGrid className="w-6 h-6 text-[#111]/70 mb-3" />
                 <p className="text-[#111] font-black text-xs tracking-widest leading-relaxed uppercase">
-                  JAVA · DJANGO ·<br/>POSTGRESQL · AWS
+                  JAVA · JAX-RS ·<br/>DOCKER · SQL
                 </p>
                 <div className="absolute bottom-4 right-4 w-9 h-9 bg-[#111]/10 rounded-full flex items-center justify-center text-[#111] group-hover:bg-[#111] group-hover:text-[#C2FF3D] transition-colors">
                   <ArrowUpRight className="w-4 h-4" />
