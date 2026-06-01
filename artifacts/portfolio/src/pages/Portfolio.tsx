@@ -16,7 +16,9 @@ import {
   FolderOpen,
   Briefcase,
   Code2,
-  ArrowUpRight
+  ArrowUpRight,
+  Layers,
+  LayoutGrid,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -357,9 +359,17 @@ export default function Portfolio() {
   const openProject = (project: typeof PROJECTS[0]) => { setSelectedProject(project); setModalOpen(true); };
   const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  const roleWords = typedRole.split(" ");
-  const firstWord = roleWords[0] || "";
-  const remainingWords = roleWords.slice(1).join(" ") || "";
+  // Split typed role into two display lines
+  const twoWordRoles = ["SOFTWARE ENGINEER", "FULL-STACK DEVELOPER", "CS STUDENT", "PROBLEM SOLVER"];
+  const [displayRoleIndex, setDisplayRoleIndex] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setDisplayRoleIndex(i => (i + 1) % twoWordRoles.length), 3400);
+    return () => clearInterval(t);
+  }, []);
+  const [displayLine1, displayLine2] = twoWordRoles[displayRoleIndex].split(" ").reduce<[string, string]>(
+    (acc, w, i, arr) => i < Math.ceil(arr.length / 2) ? [acc[0] + (acc[0] ? " " : "") + w, acc[1]] : [acc[0], acc[1] + (acc[1] ? " " : "") + w],
+    ["", ""]
+  );
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white font-sans selection:bg-primary/30 selection:text-primary">
@@ -460,56 +470,60 @@ export default function Portfolio() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex-1"
           >
-            <div className="min-h-[180px] mb-4">
-              <h2 className="font-black text-[clamp(48px,7vw,88px)] text-white leading-[0.95] tracking-tight uppercase">
-                {firstWord}
-              </h2>
-              <h2 className="font-black text-[clamp(48px,7vw,88px)] text-[#282828] leading-[0.95] tracking-tight uppercase">
-                {remainingWords || "\u00A0"}
-              </h2>
+            <div className="mb-4">
+              <div className="font-black text-[clamp(52px,6.5vw,96px)] text-white leading-[0.92] tracking-tight uppercase">
+                {displayLine1}
+              </div>
+              <div className="font-black text-[clamp(52px,6.5vw,96px)] text-[#3a3a3a] leading-[0.92] tracking-tight uppercase">
+                {displayLine2}
+              </div>
             </div>
 
             <p className="text-sm text-white/40 max-w-md mb-8 leading-relaxed">
               Software engineer building scalable systems and elegant interfaces. Currently at Sky, previously developing backend solutions for incident management.
             </p>
 
-            <div className="flex items-center gap-8 mb-8">
-              <div>
-                <div className="font-black text-4xl text-white">2+</div>
-                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Years Exp</div>
-              </div>
-              <div>
-                <div className="font-black text-4xl text-white">6+</div>
-                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Projects</div>
-              </div>
-              <div>
-                <div className="font-black text-4xl text-white">2</div>
-                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Companies</div>
-              </div>
+            <div className="flex items-start gap-10 mb-8">
+              {[
+                { val: "+2", label: "YEARS OF\nEXPERIENCE" },
+                { val: "+6", label: "PROJECTS\nCOMPLETED" },
+                { val: "2", label: "COMPANIES\nWORKED AT" },
+                { val: "+4", label: "CERTS\nEARNED" },
+              ].map(({ val, label }) => (
+                <div key={label}>
+                  <div className="font-black text-4xl text-white leading-none">{val}</div>
+                  <div className="text-[9px] font-bold text-white/35 uppercase tracking-wider mt-1.5 whitespace-pre-line leading-tight">{label}</div>
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-primary rounded-2xl p-6 relative group overflow-hidden transition-transform hover:-translate-y-1">
-                <p className="text-white font-bold text-sm tracking-widest leading-relaxed">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-primary rounded-2xl p-5 relative group overflow-hidden transition-transform hover:-translate-y-1 min-h-[110px]">
+                <Layers className="w-6 h-6 text-white/80 mb-3" />
+                <p className="text-white font-black text-xs tracking-widest leading-relaxed uppercase">
                   TYPESCRIPT · REACT ·<br/>NODE.JS · PYTHON
                 </p>
-                <div className="absolute bottom-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm group-hover:bg-white group-hover:text-primary transition-colors">
-                  <ArrowUpRight className="w-5 h-5" />
+                <div className="absolute bottom-4 right-4 w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
                 </div>
               </div>
-              <div className="bg-secondary rounded-2xl p-6 relative group overflow-hidden transition-transform hover:-translate-y-1">
-                <p className="text-[#111] font-bold text-sm tracking-widest leading-relaxed">
+              <div className="bg-[#C2FF3D] rounded-2xl p-5 relative group overflow-hidden transition-transform hover:-translate-y-1 min-h-[110px]">
+                <LayoutGrid className="w-6 h-6 text-[#111]/70 mb-3" />
+                <p className="text-[#111] font-black text-xs tracking-widest leading-relaxed uppercase">
                   JAVA · DJANGO ·<br/>POSTGRESQL · AWS
                 </p>
-                <div className="absolute bottom-4 right-4 w-10 h-10 bg-[#111]/10 rounded-full flex items-center justify-center text-[#111] backdrop-blur-sm group-hover:bg-[#111] group-hover:text-secondary transition-colors">
-                  <ArrowUpRight className="w-5 h-5" />
+                <div className="absolute bottom-4 right-4 w-9 h-9 bg-[#111]/10 rounded-full flex items-center justify-center text-[#111] group-hover:bg-[#111] group-hover:text-[#C2FF3D] transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 flex gap-4">
+            <div className="mt-6 flex gap-4">
               <Button asChild size="lg" className="rounded-full bg-white text-[#111] hover:bg-gray-200 font-bold px-8">
                 <a href="/cv.pdf" download>Download CV</a>
+              </Button>
+              <Button size="lg" variant="ghost" className="rounded-full text-white/60 hover:text-white px-6" onClick={() => scrollToSection("contact")}>
+                Get In Touch →
               </Button>
             </div>
           </motion.div>
