@@ -19,6 +19,8 @@ import {
   ArrowUpRight,
   Layers,
   LayoutGrid,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -76,6 +78,28 @@ const EXPERIENCE = [
       "Tuned SQL on the slower reporting endpoints",
     ],
   },
+];
+
+const EDUCATION = {
+  degree: "BSc (Hons) Computer Science",
+  university: "University of Westminster, London",
+  period: "Sep 2023 – Jul 2026",
+  grade: "Predicted 2:1",
+  coursework: [
+    "Data Structures & Algorithms",
+    "Database Systems",
+    "Software Engineering",
+    "Object-Oriented Programming",
+    "Computer Networks",
+    "Machine Learning & AI",
+    "Web Development",
+    "Operating Systems",
+  ],
+};
+
+const CERTIFICATIONS = [
+  // Replace these with your real certifications
+  { name: "Add your certification", issuer: "Issuer name", year: "2024", url: "#" },
 ];
 
 const PROJECTS = [
@@ -380,6 +404,13 @@ export default function Portfolio() {
             <FolderOpen className="w-5 h-5" />
           </button>
           <button 
+            onClick={() => scrollToSection("education")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "education" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-education"
+          >
+            <GraduationCap className="w-5 h-5" />
+          </button>
+          <button 
             onClick={() => scrollToSection("contact")} 
             className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "contact" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
             data-testid="nav-contact"
@@ -611,12 +642,82 @@ export default function Portfolio() {
           </div>
         </section>
 
+        {/* ── Education & Certifications ────────────────────────────────────── */}
+        <section id="education" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
+              <span className="text-primary font-mono text-sm tracking-widest">04 //</span> Education & Certifications
+            </h3>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Education Card */}
+            <div className="p-8 rounded-[22px] bg-[#111111] border border-white/5 hover:border-primary/30 transition-colors flex flex-col gap-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <GraduationCap className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold text-white mb-1">{EDUCATION.university}</h4>
+                  <p className="text-primary font-medium text-sm">{EDUCATION.degree}</p>
+                  <p className="text-white/40 text-xs font-mono mt-1">{EDUCATION.period} · {EDUCATION.grade}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-3">Key Coursework</p>
+                <div className="flex flex-wrap gap-2">
+                  {EDUCATION.coursework.map((c) => (
+                    <span key={c} className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/60">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Certifications Card */}
+            <div className="p-8 rounded-[22px] bg-[#111111] border border-white/5 hover:border-primary/30 transition-colors flex flex-col gap-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#C2FF3D]/10 flex items-center justify-center shrink-0">
+                  <Award className="w-6 h-6 text-[#C2FF3D]" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold text-white mb-1">Certifications</h4>
+                  <p className="text-white/40 text-sm">Professional credentials & courses</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {CERTIFICATIONS.map((cert, i) => (
+                  <a
+                    key={i}
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start justify-between gap-4 p-4 rounded-[14px] bg-white/[0.03] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-white group-hover:text-primary transition-colors flex items-center gap-1.5">
+                        {cert.name}
+                        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </p>
+                      <p className="text-xs text-white/40 mt-0.5">{cert.issuer}</p>
+                    </div>
+                    <span className="text-xs font-mono text-white/30 shrink-0 mt-0.5">{cert.year}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Contact ──────────────────────────────────────────────────────── */}
         <section id="contact" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
           <div className="grid md:grid-cols-2 gap-16">
             <div>
               <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4 mb-6">
-                <span className="text-primary font-mono text-sm tracking-widest">04 //</span> Contact
+                <span className="text-primary font-mono text-sm tracking-widest">05 //</span> Contact
               </h3>
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
                 Let's build something <br/>
