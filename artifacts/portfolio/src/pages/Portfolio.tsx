@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import {
   Github,
   Linkedin,
@@ -7,20 +7,11 @@ import {
   ExternalLink,
   ChevronRight,
   Send,
-  Code2,
-  Cpu,
-  Database,
-  Network,
-  Wrench,
   Sun,
   Moon,
   Download,
   CheckCircle2,
   AlertCircle,
-  Briefcase,
-  GraduationCap,
-  Calendar,
-  MapPin,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -33,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -43,27 +35,20 @@ const TYPED_ROLES = [
   "Problem Solver",
 ];
 
-const STATS = [
-  { value: 6, label: "Projects Built", suffix: "+" },
-  { value: 2, label: "Work Experiences", suffix: "" },
-  { value: 3, label: "Certifications", suffix: "" },
-  { value: 2, label: "Years Learning", suffix: "+" },
-];
-
 const SKILLS = {
-  Languages: ["Java", "Python", "C", "C++", "C#", "JavaScript (ES6+)", "TypeScript", "SQL", "PHP"],
+  "Languages": ["Java", "Python", "C", "C++", "C#", "JavaScript (ES6+)", "TypeScript", "SQL", "PHP"],
   "Frameworks & Libraries": ["React", "Django", "Spring Boot", "Flask", "Bootstrap", "Tailwind CSS", "TensorFlow", "Keras", "OpenCV"],
-  Databases: ["MySQL", "PostgreSQL", "SQLite", "MongoDB"],
+  "Databases": ["MySQL", "PostgreSQL", "SQLite", "MongoDB"],
   "Tools & Platforms": ["Git", "GitHub", "Docker", "Postman", "Swagger", "Linux", "VS Code", "Figma", "CI/CD Pipelines"],
   "AI & ML": ["Deep Learning", "CNN Models", "LSTM Networks", "Computer Vision", "Deepfake Detection", "Minimax & Alpha-Beta Pruning"],
-  Concepts: ["Full-Stack Development", "RESTful APIs", "MVC Architecture", "Agile/Scrum", "OOP", "Data Structures & Algorithms", "System Design"],
+  "Concepts": ["Full-Stack Development", "RESTful APIs", "MVC Architecture", "Agile/Scrum", "OOP", "Data Structures & Algorithms", "System Design"],
 };
 
 const EXPERIENCE = [
   {
     company: "Sky Ltd",
     role: "Software Engineer",
-    period: "January 2025 – April 2025",
+    period: "Jan 2025 – Apr 2025",
     location: "London, UK",
     description: "Developed scalable web applications and enhanced user experiences using React and modularised backend systems. Collaborated with QA and backend teams, participated in code reviews, and documented core features to ensure maintainable, high-quality software.",
     highlights: [
@@ -78,7 +63,7 @@ const EXPERIENCE = [
   {
     company: "Technokraft Ltd",
     role: "Backend Developer",
-    period: "June 2023 – August 2023",
+    period: "Jun 2023 – Aug 2023",
     location: "India",
     description: "Built and maintained backend systems, RESTful APIs, and dashboards, improving data accessibility and operational efficiency for stakeholders.",
     highlights: [
@@ -154,12 +139,6 @@ const PROJECTS = [
   },
 ];
 
-const CERTIFICATIONS = [
-  { title: "C & C++ Programming Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2022" },
-  { title: "Website Designing Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2023" },
-  { title: "Web Development Certification", issuer: "TechnoKraft Training & Solution Pvt. Ltd.", year: "2023" },
-];
-
 // ─── Animation Variants ───────────────────────────────────────────────────────
 
 const staggerContainer = {
@@ -169,10 +148,15 @@ const staggerContainer = {
 
 const slideUp = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
-// ─── Typing Animation Hook ────────────────────────────────────────────────────
+const fadeIn = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.8 } },
+};
+
+// ─── Hook: Typing Animation ───────────────────────────────────────────────────
 
 function useTypingAnimation(words: string[], typingSpeed = 80, deletingSpeed = 40, pauseDuration = 1800) {
   const [display, setDisplay] = useState("");
@@ -204,66 +188,54 @@ function useTypingAnimation(words: string[], typingSpeed = 80, deletingSpeed = 4
   return display;
 }
 
-// ─── Animated Counter ─────────────────────────────────────────────────────────
-
-function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(0);
-  const spring = useSpring(motionValue, { duration: 2000, bounce: 0 });
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  useEffect(() => {
-    if (isInView) motionValue.set(value);
-  }, [isInView, motionValue, value]);
-
-  useEffect(() => {
-    return spring.on("change", (latest) => {
-      if (ref.current) ref.current.textContent = Math.floor(latest) + suffix;
-    });
-  }, [spring, suffix]);
-
-  return <span ref={ref}>0{suffix}</span>;
-}
-
-// ─── Project Modal ────────────────────────────────────────────────────────────
+// ─── Modal ────────────────────────────────────────────────────────────────────
 
 function ProjectModal({ project, open, onClose }: { project: typeof PROJECTS[0] | null; open: boolean; onClose: () => void }) {
   if (!project) return null;
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-project-detail">
-        <DialogHeader>
-          <p className="font-mono text-primary text-sm mb-1">{project.subtitle}</p>
-          <DialogTitle className="text-2xl font-bold">{project.title}</DialogTitle>
-          <DialogDescription className="sr-only">{project.description}</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-6 pt-2">
-          <p className="text-muted-foreground leading-relaxed">{project.longDescription}</p>
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Key Highlights</h4>
-            <ul className="space-y-2">
-              {project.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-2 text-muted-foreground text-sm">
-                  <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />{h}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-3 uppercase tracking-wider">Tech Stack</h4>
-            <div className="flex flex-wrap gap-2">
-              {project.tech.map((t) => (
-                <span key={t} className="text-sm font-mono text-foreground bg-secondary/60 px-3 py-1 rounded-full">{t}</span>
-              ))}
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0 border-border bg-card rounded-none" data-testid="dialog-project-detail">
+        <div className="p-8 md:p-12">
+          <DialogHeader className="mb-8">
+            <p className="font-mono text-primary text-sm mb-4 uppercase tracking-widest">{project.subtitle}</p>
+            <DialogTitle className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">{project.title}</DialogTitle>
+            <DialogDescription className="sr-only">{project.description}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-12">
+            <div className="prose prose-zinc dark:prose-invert max-w-none">
+              <p className="text-lg text-muted-foreground leading-relaxed">{project.longDescription}</p>
             </div>
-          </div>
-          <div className="flex gap-3 pt-2">
-            <Button asChild size="sm" data-testid={`button-github-${project.title}`}>
-              <a href={project.link} target="_blank" rel="noopener noreferrer">
-                <Github className="w-4 h-4 mr-2" /> View on GitHub
-              </a>
-            </Button>
-            <Button variant="outline" size="sm" onClick={onClose}>Close</Button>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-widest">Key Highlights</h4>
+                <ul className="space-y-3">
+                  {project.highlights.map((h) => (
+                    <li key={h} className="flex items-start gap-3 text-muted-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                      <span className="leading-snug">{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-widest">Tech Stack</h4>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((t) => (
+                    <span key={t} className="text-sm font-mono text-muted-foreground bg-secondary px-3 py-1.5">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="pt-4 flex gap-4">
+              <Button asChild size="lg" className="rounded-none bg-foreground text-background hover:bg-foreground/90 font-medium" data-testid={`button-github-${project.title}`}>
+                <a href={project.link} target="_blank" rel="noopener noreferrer">
+                  <Github className="w-4 h-4 mr-2" /> View Repository
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-none" onClick={onClose}>Close</Button>
+            </div>
           </div>
         </div>
       </DialogContent>
@@ -306,353 +278,290 @@ function ContactForm() {
 
   if (status === "success") {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center gap-4 py-12 text-center" data-testid="contact-success">
-        <CheckCircle2 className="w-14 h-14 text-primary" />
-        <h3 className="text-xl font-semibold">Message received!</h3>
-        <p className="text-muted-foreground">Thanks for reaching out. I'll get back to you soon.</p>
-        <Button variant="outline" size="sm" onClick={() => setStatus("idle")}>Send another</Button>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        className="p-8 border border-border bg-secondary/30" data-testid="contact-success">
+        <CheckCircle2 className="w-8 h-8 text-primary mb-4" />
+        <h3 className="text-xl font-semibold mb-2">Message received</h3>
+        <p className="text-muted-foreground mb-6">Thanks for reaching out. I'll get back to you soon.</p>
+        <Button variant="outline" className="rounded-none" onClick={() => setStatus("idle")}>Send another</Button>
       </motion.div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="form-contact">
-      <div className="grid md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-6" data-testid="form-contact">
+      <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium" htmlFor="name">Name</label>
-          <Input id="name" name="name" placeholder="John Doe" required value={form.name} onChange={handleChange} disabled={status === "sending"} data-testid="input-name" />
+          <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="name">Name</label>
+          <Input id="name" name="name" required value={form.name} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 rounded-none shadow-none" data-testid="input-name" />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium" htmlFor="email">Email</label>
-          <Input id="email" name="email" type="email" placeholder="john@example.com" required value={form.email} onChange={handleChange} disabled={status === "sending"} data-testid="input-email" />
+          <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="email">Email</label>
+          <Input id="email" name="email" type="email" required value={form.email} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 rounded-none shadow-none" data-testid="input-email" />
         </div>
       </div>
-      <div className="space-y-2">
-        <label className="text-sm font-medium" htmlFor="message">Message</label>
-        <Textarea id="message" name="message" placeholder="Hello Jay..." rows={5} required value={form.message} onChange={handleChange} disabled={status === "sending"} data-testid="input-message" />
+      <div className="space-y-2 pt-4">
+        <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="message">Message</label>
+        <Textarea id="message" name="message" rows={4} required value={form.message} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 shadow-none resize-none" data-testid="input-message" />
       </div>
+      
       {status === "error" && (
         <div className="flex items-center gap-2 text-sm text-destructive" data-testid="contact-error">
           <AlertCircle className="w-4 h-4 shrink-0" />
-          Something went wrong. Please try emailing directly at chafekarjay12@gmail.com.
+          Something went wrong. Please try emailing directly.
         </div>
       )}
-      <Button type="submit" className="w-full" size="lg" disabled={status === "sending"} data-testid="button-submit-contact">
-        {status === "sending" ? (
-          <span className="flex items-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />Sending...
-          </span>
-        ) : (
-          <span className="flex items-center gap-2"><Send className="w-4 h-4" /> Send Message</span>
-        )}
-      </Button>
+      
+      <div className="pt-6">
+        <Button type="submit" size="lg" className="rounded-none bg-foreground text-background hover:bg-foreground/90 w-full sm:w-auto min-w-32" disabled={status === "sending"} data-testid="button-submit-contact">
+          {status === "sending" ? "Sending..." : "Send Message"}
+        </Button>
+      </div>
     </form>
   );
 }
 
-// ─── Main Portfolio Component ─────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Portfolio() {
   const { theme, setTheme } = useTheme();
   const typedRole = useTypingAnimation(TYPED_ROLES);
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  
+  const { scrollYProgress } = useScroll();
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const openProject = (project: typeof PROJECTS[0]) => { setSelectedProject(project); setModalOpen(true); };
   const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans overflow-x-hidden">
-
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-mono font-bold text-primary text-xl">JC.</span>
-          <div className="hidden md:flex gap-6 text-sm font-medium">
-            {["about", "experience", "skills", "projects", "contact"].map((s) => (
-              <button key={s} onClick={() => scrollToSection(s)} className="capitalize hover:text-primary transition-colors" data-testid={`nav-${s}`}>{s}</button>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 selection:text-primary">
+      {/* Editorial Navigation */}
+      <nav className={cn(
+        "fixed top-0 w-full z-50 transition-all duration-300 bg-background/95 backdrop-blur-sm",
+        scrolled ? "border-b border-border py-4" : "py-6"
+      )}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+          <span className="font-mono font-bold tracking-tighter text-xl">JC.</span>
+          <div className="hidden md:flex gap-8 text-sm font-medium tracking-wide">
+            {["experience", "skills", "projects", "contact"].map((s) => (
+              <button 
+                key={s} 
+                onClick={() => scrollToSection(s)} 
+                className="capitalize text-muted-foreground hover:text-foreground transition-colors relative group" 
+                data-testid={`nav-${s}`}
+              >
+                {s}
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
+              </button>
             ))}
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} data-testid="button-theme-toggle">
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} data-testid="button-theme-toggle">
+            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
         </div>
+        <motion.div className="absolute bottom-0 left-0 h-[1px] bg-primary origin-left" style={{ width: progressWidth }} />
       </nav>
 
-      <main className="max-w-6xl mx-auto px-6 pt-24 pb-20">
-
+      <main className="pt-32 pb-24">
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section id="hero" className="min-h-[85vh] flex flex-col justify-center py-20 relative">
-          <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10" />
-          <div className="absolute bottom-1/4 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl -z-10" />
-
-          <motion.div className="flex flex-col-reverse md:flex-row items-center gap-12" initial="hidden" animate="show" variants={staggerContainer}>
-            <div className="flex-1 space-y-6">
-              <motion.div variants={slideUp}>
-                <span className="font-mono text-primary mb-2 block text-sm tracking-widest uppercase">Hi, my name is</span>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground">Jay Chafekar.</h1>
-                <h2 className="text-2xl md:text-4xl font-semibold text-muted-foreground mt-3 min-h-[1.2em] flex items-center gap-1">
-                  <span>{typedRole}</span>
-                  <span className="inline-block w-0.5 h-[1em] bg-primary animate-pulse ml-0.5" />
-                </h2>
-              </motion.div>
-              <motion.p variants={slideUp} className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-                BSc Computer Science graduate from the University of Westminster. Experienced in full-stack development, RESTful APIs, and AI-powered systems — with real-world delivery at Sky Ltd.
-              </motion.p>
-              <motion.div variants={slideUp} className="flex flex-wrap gap-3 pt-4">
-                <Button size="lg" onClick={() => scrollToSection("projects")} className="font-medium group" data-testid="button-view-projects">
-                  View Projects <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button size="lg" variant="outline" onClick={() => scrollToSection("contact")} data-testid="button-contact">Get In Touch</Button>
-                <Button size="lg" variant="secondary" asChild data-testid="button-download-cv">
-                  <a href="/cv.pdf" download="Jay_Chafekar_CV.pdf">
-                    <Download className="w-4 h-4 mr-2" /> Download CV
-                  </a>
-                </Button>
-              </motion.div>
-            </div>
-
-            <motion.div variants={slideUp} className="w-64 h-64 md:w-80 md:h-80 relative shrink-0">
-              <div className="absolute inset-0 bg-primary/20 rounded-2xl rotate-6" />
-              <img src="/avatar.png" alt="Jay Chafekar" className="w-full h-full object-cover rounded-2xl relative z-10 border border-border shadow-2xl" data-testid="img-avatar" />
+        <section id="hero" className="min-h-[75vh] flex flex-col justify-center max-w-7xl mx-auto px-6 lg:px-12 relative">
+          <div className="absolute inset-0 bg-dot-pattern opacity-50 pointer-events-none -z-10 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
+          
+          <motion.div initial="hidden" animate="show" variants={staggerContainer} className="max-w-5xl">
+            <motion.div variants={slideUp} className="mb-6 flex items-center gap-4">
+              <span className="h-px w-8 bg-primary" />
+              <span className="font-mono text-primary text-sm tracking-widest uppercase">Portfolio</span>
+            </motion.div>
+            
+            <motion.h1 variants={slideUp} className="text-6xl sm:text-7xl md:text-9xl font-extrabold tracking-tighter text-foreground leading-[0.9] mb-8">
+              Jay <br/>Chafekar.
+            </motion.h1>
+            
+            <motion.h2 variants={slideUp} className="text-2xl md:text-4xl font-light text-muted-foreground mb-12 flex items-center gap-2">
+              <span className="font-serif italic text-foreground/70">I am a</span>
+              <span className="font-medium text-foreground">{typedRole}</span>
+              <span className="inline-block w-0.5 h-[1em] bg-primary animate-pulse ml-1" />
+            </motion.h2>
+            
+            <motion.div variants={slideUp} className="flex flex-wrap gap-6 items-center">
+              <Button size="lg" onClick={() => scrollToSection("projects")} className="rounded-none bg-foreground text-background hover:bg-foreground/90 font-medium" data-testid="button-view-projects">
+                View Projects
+              </Button>
+              <Button size="lg" variant="ghost" onClick={() => scrollToSection("contact")} className="rounded-none hover:bg-transparent hover:text-primary transition-colors px-0" data-testid="button-contact">
+                Get In Touch <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+              <Button size="lg" variant="ghost" asChild className="rounded-none hover:bg-transparent hover:text-primary transition-colors px-0 text-muted-foreground" data-testid="button-download-cv">
+                <a href="/cv.pdf" download="Jay_Chafekar_CV.pdf">
+                  Download CV <Download className="w-4 h-4 ml-1" />
+                </a>
+              </Button>
             </motion.div>
           </motion.div>
         </section>
 
-        {/* ── Stats Bar ────────────────────────────────────────────────────── */}
-        <motion.section className="py-12 border-y border-border/50 my-4" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {STATS.map((stat) => (
-              <motion.div key={stat.label} variants={slideUp} className="space-y-1">
-                <p className="text-4xl font-bold text-primary font-mono"><AnimatedCounter value={stat.value} suffix={stat.suffix} /></p>
-                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ── About ────────────────────────────────────────────────────────── */}
-        <motion.section id="about" className="py-24" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.div variants={slideUp} className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold">About Me</h2>
-            <div className="h-px bg-border flex-1" />
-          </motion.div>
-          <motion.div variants={slideUp} className="grid md:grid-cols-2 gap-12 text-lg text-muted-foreground leading-relaxed">
-            <div className="space-y-6">
-              <p>
-                I'm a Computer Science graduate from the University of Westminster with hands-on experience in full-stack development, RESTful APIs, and algorithm optimisation. I enjoy building applications that combine clean frontends with powerful backend systems and intelligent AI-driven features.
-              </p>
-              <p>
-                My expertise spans Java, Python, C++, JavaScript, React, Django, and SQL. I've delivered real-world projects at Sky Ltd, where I engineered a React health platform used by 5,000+ users and mentored a team of 12.
-              </p>
-            </div>
-            <div className="space-y-6">
-              <p>
-                Beyond writing code, I'm deeply interested in system design, algorithm optimisation, and building scalable products. I'm always learning — with the long-term goal of building innovative AI-powered solutions that reach real users at scale.
-              </p>
-              <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
-                <h3 className="text-foreground font-semibold mb-3">Languages</h3>
-                <div className="flex gap-4 text-base">
-                  <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> English — Fluent</span>
-                  <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> Hindi — Native</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.section>
-
         {/* ── Experience ───────────────────────────────────────────────────── */}
-        <motion.section id="experience" className="py-24" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.div variants={slideUp} className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold">Experience</h2>
-            <div className="h-px bg-border flex-1" />
-          </motion.div>
+        <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
+            <motion.div variants={slideUp} className="mb-16">
+              <h3 className="text-4xl font-bold tracking-tight mb-2">Experience</h3>
+              <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">01 // Work History</p>
+            </motion.div>
 
-          <div className="relative">
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-border hidden md:block" />
-            <div className="space-y-10">
-              {EXPERIENCE.map((exp, idx) => (
-                <motion.div key={exp.company} variants={slideUp} className="md:pl-16 relative">
-                  <div className="hidden md:flex absolute left-0 top-1 w-12 h-12 rounded-full bg-card border border-border items-center justify-center text-primary shrink-0">
-                    <Briefcase className="w-5 h-5" />
-                  </div>
-                  <div className="p-8 bg-card border border-border rounded-2xl hover:border-primary/30 transition-colors" data-testid={`card-experience-${idx}`}>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold text-foreground">{exp.role}</h3>
-                        <p className="text-primary font-semibold">{exp.company}</p>
-                      </div>
-                      <div className="flex flex-col items-start md:items-end gap-1 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{exp.period}</span>
-                        <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{exp.location}</span>
-                      </div>
+            <div className="space-y-20">
+              {EXPERIENCE.map((exp, i) => (
+                <motion.div key={i} variants={slideUp} className="group relative">
+                  <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
+                    <div className="md:text-right border-l md:border-l-0 md:border-r border-border pl-6 md:pl-0 md:pr-6 md:py-2">
+                      <h4 className="text-2xl font-bold text-foreground">{exp.company}</h4>
+                      <p className="text-primary font-medium mt-1 mb-3">{exp.role}</p>
+                      <p className="text-sm font-mono text-muted-foreground mb-1">{exp.period}</p>
+                      <p className="text-sm text-muted-foreground">{exp.location}</p>
                     </div>
-                    <p className="text-muted-foreground mb-5 leading-relaxed">{exp.description}</p>
-                    <ul className="space-y-2">
-                      {exp.highlights.map((h) => (
-                        <li key={h} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />{h}
-                        </li>
-                      ))}
-                    </ul>
+                    <div>
+                      <p className="text-lg text-foreground/80 leading-relaxed mb-6">{exp.description}</p>
+                      <ul className="space-y-3">
+                        {exp.highlights.map((h, j) => (
+                          <li key={j} className="flex gap-4 text-muted-foreground">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors mt-2.5 shrink-0" />
+                            <span className="leading-relaxed">{h}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </motion.div>
               ))}
             </div>
-          </div>
-
-          {/* Education */}
-          <motion.div variants={slideUp} className="mt-12 p-8 bg-card border border-border rounded-2xl flex flex-col md:flex-row items-start md:items-center gap-6" data-testid="card-education">
-            <div className="flex w-12 h-12 rounded-full bg-primary/10 items-center justify-center text-primary shrink-0">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <div className="flex-1">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">BSc Computer Science</h3>
-                  <p className="text-primary font-semibold">University of Westminster</p>
-                </div>
-                <div className="flex flex-col items-start md:items-end gap-1 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />September 2023 – Present</span>
-                  <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />London, UK</span>
-                </div>
-              </div>
-              <p className="text-muted-foreground text-sm mt-3">Key Modules: Data Structures & Algorithms, Software Development, AI & Machine Learning, Databases, Networks & Security</p>
-            </div>
           </motion.div>
-        </motion.section>
+        </section>
 
         {/* ── Skills ───────────────────────────────────────────────────────── */}
-        <motion.section id="skills" className="py-24" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.div variants={slideUp} className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold">Technical Arsenal</h2>
-            <div className="h-px bg-border flex-1" />
-          </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(SKILLS).map(([category, skills], idx) => {
-              const icons = [Code2, FrameworkIcon, Database, Wrench, Cpu, Network];
-              const Icon = icons[idx % icons.length];
-              return (
-                <motion.div key={category} variants={slideUp} className="p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-colors">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary"><Icon className="w-5 h-5" /></div>
-                    <h3 className="font-semibold text-foreground">{category}</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {skills.map((skill) => (
-                      <span key={skill} className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full font-medium font-mono">{skill}</span>
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })}
+        <section id="skills" className="py-24 bg-secondary/20">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
+              <motion.div variants={slideUp} className="mb-16">
+                <h3 className="text-4xl font-bold tracking-tight mb-2">Expertise</h3>
+                <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">02 // Technical Skills</p>
+              </motion.div>
+
+              <div className="grid gap-12 max-w-4xl">
+                {Object.entries(SKILLS).map(([category, items], i) => (
+                  <motion.div key={category} variants={slideUp} className="grid md:grid-cols-[200px_1fr] gap-4 md:gap-8 items-start">
+                    <h4 className="font-mono text-sm font-semibold tracking-widest uppercase text-foreground/80 pt-2">{category}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((skill) => (
+                        <span key={skill} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-background border border-border/50 hover:border-primary/50 hover:text-foreground transition-colors cursor-default">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
-        </motion.section>
+        </section>
 
         {/* ── Projects ─────────────────────────────────────────────────────── */}
-        <motion.section id="projects" className="py-24" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.div variants={slideUp} className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold">Featured Work</h2>
-            <div className="h-px bg-border flex-1" />
+        <section id="projects" className="py-24 max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
+            <motion.div variants={slideUp} className="mb-16 flex items-end justify-between">
+              <div>
+                <h3 className="text-4xl font-bold tracking-tight mb-2">Selected Works</h3>
+                <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">03 // Projects</p>
+              </div>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {PROJECTS.map((project, i) => (
+                <motion.div 
+                  key={project.title} 
+                  variants={slideUp} 
+                  className="group relative bg-background border border-border p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_hsl(var(--primary))]"
+                >
+                  <div className="absolute top-6 right-8 text-4xl font-bold text-muted/30 font-mono pointer-events-none transition-colors group-hover:text-primary/10">
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  
+                  <p className="font-mono text-xs tracking-widest uppercase text-primary mb-4">{project.subtitle}</p>
+                  <h4 className="text-2xl font-bold mb-4 pr-12">{project.title}</h4>
+                  <p className="text-muted-foreground leading-relaxed mb-8 flex-1">{project.description}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {project.tech.slice(0, 4).map((t) => (
+                      <span key={t} className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-1">{t}</span>
+                    ))}
+                    {project.tech.length > 4 && <span className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-1">+{project.tech.length - 4}</span>}
+                  </div>
+                  
+                  <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-6">
+                    <button 
+                      onClick={() => openProject(project)}
+                      className="text-sm font-semibold tracking-wide flex items-center gap-2 hover:text-primary transition-colors"
+                      data-testid={`button-details-${project.title}`}
+                    >
+                      View Details <ExternalLink className="w-4 h-4" />
+                    </button>
+                    <a 
+                      href={project.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-muted-foreground hover:text-foreground transition-colors p-2"
+                      aria-label="View on GitHub"
+                    >
+                      <Github className="w-5 h-5" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PROJECTS.map((project) => (
-              <motion.div
-                key={project.title}
-                variants={slideUp}
-                className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer flex flex-col"
-                onClick={() => openProject(project)}
-                data-testid={`card-project-${project.title}`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-mono text-primary text-xs uppercase tracking-wider">{project.year}</p>
-                  <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded font-mono">{project.tech[0]}</span>
-                </div>
-                <h3 className="text-lg font-bold text-foreground mb-1">{project.title}</h3>
-                <p className="text-xs text-primary/80 mb-3 font-medium">{project.subtitle}</p>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-5 flex-1">{project.description}</p>
-                <div className="flex flex-wrap gap-1.5 mb-5">
-                  {project.tech.slice(0, 3).map((t) => (
-                    <span key={t} className="text-xs font-mono text-foreground bg-secondary/50 px-2 py-0.5 rounded">{t}</span>
-                  ))}
-                  {project.tech.length > 3 && <span className="text-xs font-mono text-muted-foreground px-2 py-0.5">+{project.tech.length - 3}</span>}
-                </div>
-                <div className="flex items-center justify-between">
-                  <button
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-                    onClick={(e) => { e.stopPropagation(); openProject(project); }}
-                    data-testid={`button-details-${project.title}`}
-                  >
-                    View Details <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid={`link-github-${project.title}`}>
-                    <Github className="w-4 h-4" />
+        </section>
+
+        {/* ── Contact ──────────────────────────────────────────────────────── */}
+        <section id="contact" className="py-32 border-t border-border">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="grid md:grid-cols-2 gap-16">
+              <motion.div variants={slideUp}>
+                <h3 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">Let's build<br/>something.</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-12">
+                  Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+                </p>
+                <div className="space-y-4 font-mono text-sm tracking-wide">
+                  <a href="mailto:chafekarjay12@gmail.com" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
+                    <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" /> chafekarjay12@gmail.com
+                  </a>
+                  <a href="https://github.com/Jaychafekar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
+                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform" /> github.com/Jaychafekar
+                  </a>
+                  <a href="https://linkedin.com/in/jaychafekar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
+                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" /> linkedin.com/in/jaychafekar
                   </a>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ── Certifications ───────────────────────────────────────────────── */}
-        <motion.section id="certifications" className="py-24" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.div variants={slideUp} className="flex items-center gap-4 mb-12">
-            <h2 className="text-3xl font-bold">Certifications</h2>
-            <div className="h-px bg-border flex-1" />
-          </motion.div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {CERTIFICATIONS.map((cert) => (
-              <motion.div key={cert.title} variants={slideUp}
-                className="p-6 bg-card border border-border rounded-xl flex flex-col gap-3 hover:border-primary/40 transition-colors" data-testid={`card-cert-${cert.year}`}>
-                <span className="font-mono text-xs text-primary bg-primary/10 px-2 py-0.5 rounded w-fit">{cert.year}</span>
-                <h3 className="font-semibold text-foreground leading-snug">{cert.title}</h3>
-                <p className="text-sm text-muted-foreground">{cert.issuer}</p>
+              
+              <motion.div variants={slideUp} className="bg-background">
+                <ContactForm />
               </motion.div>
-            ))}
+            </motion.div>
           </div>
-        </motion.section>
-
-        {/* ── Contact ──────────────────────────────────────────────────────── */}
-        <motion.section id="contact" className="py-24 max-w-2xl mx-auto text-center" initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-          <motion.h2 variants={slideUp} className="text-4xl font-bold mb-4">Get In Touch</motion.h2>
-          <motion.p variants={slideUp} className="text-muted-foreground mb-8">
-            I'm open to new opportunities, collaborations, and interesting conversations. Drop me a message and I'll get back to you as soon as possible.
-          </motion.p>
-          <motion.div variants={slideUp} className="flex justify-center gap-6 mb-10">
-            <a href="mailto:chafekarjay12@gmail.com" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" data-testid="link-email-contact">
-              <Mail className="w-4 h-4" /> chafekarjay12@gmail.com
-            </a>
-            <a href="https://www.linkedin.com/in/jay-chafekar" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors" data-testid="link-linkedin-contact">
-              <Linkedin className="w-4 h-4" /> LinkedIn
-            </a>
-          </motion.div>
-          <motion.div variants={slideUp}><ContactForm /></motion.div>
-        </motion.section>
+        </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-card">
-        <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-sm text-muted-foreground">© 2026 Jay Chafekar. Built with React & Vite.</p>
-          <div className="flex items-center gap-6">
-            <a href="mailto:chafekarjay12@gmail.com" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-email"><Mail className="w-5 h-5" /></a>
-            <a href="https://github.com/Jaychafekar" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-github"><Github className="w-5 h-5" /></a>
-            <a href="https://www.linkedin.com/in/jay-chafekar" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-linkedin"><Linkedin className="w-5 h-5" /></a>
-          </div>
-        </div>
+      <footer className="py-8 text-center text-sm font-mono text-muted-foreground border-t border-border bg-secondary/10">
+        <p>Designed & Built by Jay Chafekar © {new Date().getFullYear()}</p>
       </footer>
 
       <ProjectModal project={selectedProject} open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
-  );
-}
-
-function FrameworkIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="M15 3v18" />
-    </svg>
   );
 }
