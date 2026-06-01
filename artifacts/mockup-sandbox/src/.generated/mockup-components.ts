@@ -4,5 +4,6 @@ export const modules: ModuleMap = {
   "./components/mockups/portfolio-themes/Brutalist.tsx": () => import("../components/mockups/portfolio-themes/Brutalist.tsx"),
   "./components/mockups/portfolio-themes/Glass.tsx": () => import("../components/mockups/portfolio-themes/Glass.tsx"),
   "./components/mockups/portfolio-themes/Minimal.tsx": () => import("../components/mockups/portfolio-themes/Minimal.tsx"),
+  "./components/mockups/portfolio-themes/Sawad.tsx": () => import("../components/mockups/portfolio-themes/Sawad.tsx"),
   "./components/mockups/portfolio-themes/Terminal.tsx": () => import("../components/mockups/portfolio-themes/Terminal.tsx")
 };
