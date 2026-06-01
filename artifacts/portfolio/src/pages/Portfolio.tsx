@@ -12,6 +12,11 @@ import {
   Download,
   CheckCircle2,
   AlertCircle,
+  Home,
+  FolderOpen,
+  Briefcase,
+  Code2,
+  ArrowUpRight
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -29,10 +34,10 @@ import { cn } from "@/lib/utils";
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const TYPED_ROLES = [
-  "Software Engineer",
-  "AI Developer",
-  "Full-Stack Builder",
-  "Problem Solver",
+  "SOFTWARE ENGINEER",
+  "FULL-STACK DEVELOPER",
+  "CS STUDENT",
+  "PROBLEM SOLVER",
 ];
 
 const SKILLS = {
@@ -194,7 +199,7 @@ function ProjectModal({ project, open, onClose }: { project: typeof PROJECTS[0] 
   if (!project) return null;
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0 border-border bg-card rounded-none" data-testid="dialog-project-detail">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0 border-border bg-card rounded-[22px]" data-testid="dialog-project-detail">
         <div className="p-8 md:p-12">
           <DialogHeader className="mb-8">
             <p className="font-mono text-primary text-sm mb-4 uppercase tracking-widest">{project.subtitle}</p>
@@ -222,19 +227,19 @@ function ProjectModal({ project, open, onClose }: { project: typeof PROJECTS[0] 
                 <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-widest">Tech Stack</h4>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((t) => (
-                    <span key={t} className="text-sm font-mono text-muted-foreground bg-secondary px-3 py-1.5">{t}</span>
+                    <span key={t} className="text-sm font-mono text-foreground/80 bg-white/5 px-3 py-1.5 rounded-md border border-white/10">{t}</span>
                   ))}
                 </div>
               </div>
             </div>
             
             <div className="pt-4 flex gap-4">
-              <Button asChild size="lg" className="rounded-none bg-foreground text-background hover:bg-foreground/90 font-medium" data-testid={`button-github-${project.title}`}>
+              <Button asChild size="lg" className="rounded-full bg-primary text-white hover:bg-primary/90 font-medium" data-testid={`button-github-${project.title}`}>
                 <a href={project.link} target="_blank" rel="noopener noreferrer">
                   <Github className="w-4 h-4 mr-2" /> View Repository
                 </a>
               </Button>
-              <Button variant="outline" size="lg" className="rounded-none" onClick={onClose}>Close</Button>
+              <Button variant="outline" size="lg" className="rounded-full bg-transparent border-white/20 text-foreground hover:bg-white/5" onClick={onClose}>Close</Button>
             </div>
           </div>
         </div>
@@ -279,11 +284,11 @@ function ContactForm() {
   if (status === "success") {
     return (
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        className="p-8 border border-border bg-secondary/30" data-testid="contact-success">
+        className="p-8 rounded-[22px] border border-white/10 bg-[#111111]" data-testid="contact-success">
         <CheckCircle2 className="w-8 h-8 text-primary mb-4" />
-        <h3 className="text-xl font-semibold mb-2">Message received</h3>
-        <p className="text-muted-foreground mb-6">Thanks for reaching out. I'll get back to you soon.</p>
-        <Button variant="outline" className="rounded-none" onClick={() => setStatus("idle")}>Send another</Button>
+        <h3 className="text-xl font-semibold mb-2 text-white">Message received</h3>
+        <p className="text-white/50 mb-6">Thanks for reaching out. I'll get back to you soon.</p>
+        <Button variant="outline" className="rounded-full border-white/20 hover:bg-white/5 bg-transparent text-white" onClick={() => setStatus("idle")}>Send another</Button>
       </motion.div>
     );
   }
@@ -292,17 +297,17 @@ function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6" data-testid="form-contact">
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="name">Name</label>
-          <Input id="name" name="name" required value={form.name} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 rounded-none shadow-none" data-testid="input-name" />
+          <label className="text-xs font-mono uppercase tracking-widest text-white/50" htmlFor="name">Name</label>
+          <Input id="name" name="name" required value={form.name} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b border-t-0 border-l-0 border-r-0 border-white/10 bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 shadow-none text-white" data-testid="input-name" />
         </div>
         <div className="space-y-2">
-          <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="email">Email</label>
-          <Input id="email" name="email" type="email" required value={form.email} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 rounded-none shadow-none" data-testid="input-email" />
+          <label className="text-xs font-mono uppercase tracking-widest text-white/50" htmlFor="email">Email</label>
+          <Input id="email" name="email" type="email" required value={form.email} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b border-t-0 border-l-0 border-r-0 border-white/10 bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 shadow-none text-white" data-testid="input-email" />
         </div>
       </div>
       <div className="space-y-2 pt-4">
-        <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground" htmlFor="message">Message</label>
-        <Textarea id="message" name="message" rows={4} required value={form.message} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-border bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 shadow-none resize-none" data-testid="input-message" />
+        <label className="text-xs font-mono uppercase tracking-widest text-white/50" htmlFor="message">Message</label>
+        <Textarea id="message" name="message" rows={4} required value={form.message} onChange={handleChange} disabled={status === "sending"} className="rounded-none border-b border-t-0 border-l-0 border-r-0 border-white/10 bg-transparent focus-visible:ring-0 focus-visible:border-primary px-0 shadow-none resize-none text-white" data-testid="input-message" />
       </div>
       
       {status === "error" && (
@@ -313,7 +318,7 @@ function ContactForm() {
       )}
       
       <div className="pt-6">
-        <Button type="submit" size="lg" className="rounded-none bg-foreground text-background hover:bg-foreground/90 w-full sm:w-auto min-w-32" disabled={status === "sending"} data-testid="button-submit-contact">
+        <Button type="submit" size="lg" className="rounded-full bg-primary text-white hover:bg-primary/90 w-full sm:w-auto min-w-32" disabled={status === "sending"} data-testid="button-submit-contact">
           {status === "sending" ? "Sending..." : "Send Message"}
         </Button>
       </div>
@@ -329,236 +334,320 @@ export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   
-  const { scrollYProgress } = useScroll();
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  
-  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      const sections = ["hero", "experience", "skills", "projects", "contact"];
+      for (const section of [...sections].reverse()) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const openProject = (project: typeof PROJECTS[0]) => { setSelectedProject(project); setModalOpen(true); };
   const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 selection:text-primary">
-      {/* Editorial Navigation */}
-      <nav className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 bg-background/95 backdrop-blur-sm",
-        scrolled ? "border-b border-border py-4" : "py-6"
-      )}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
-          <span className="font-mono font-bold tracking-tighter text-xl">JC.</span>
-          <div className="hidden md:flex gap-8 text-sm font-medium tracking-wide">
-            {["experience", "skills", "projects", "contact"].map((s) => (
-              <button 
-                key={s} 
-                onClick={() => scrollToSection(s)} 
-                className="capitalize text-muted-foreground hover:text-foreground transition-colors relative group" 
-                data-testid={`nav-${s}`}
-              >
-                {s}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
-              </button>
-            ))}
-          </div>
-          <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} data-testid="button-theme-toggle">
-            {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </Button>
-        </div>
-        <motion.div className="absolute bottom-0 left-0 h-[1px] bg-primary origin-left" style={{ width: progressWidth }} />
-      </nav>
+  const roleWords = typedRole.split(" ");
+  const firstWord = roleWords[0] || "";
+  const remainingWords = roleWords.slice(1).join(" ") || "";
 
-      <main className="pt-32 pb-24">
-        {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section id="hero" className="min-h-[75vh] flex flex-col justify-center max-w-7xl mx-auto px-6 lg:px-12 relative">
-          <div className="absolute inset-0 bg-dot-pattern opacity-50 pointer-events-none -z-10 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
-          
-          <motion.div initial="hidden" animate="show" variants={staggerContainer} className="max-w-5xl">
-            <motion.div variants={slideUp} className="mb-6 flex items-center gap-4">
-              <span className="h-px w-8 bg-primary" />
-              <span className="font-mono text-primary text-sm tracking-widest uppercase">Portfolio</span>
-            </motion.div>
-            
-            <motion.h1 variants={slideUp} className="text-6xl sm:text-7xl md:text-9xl font-extrabold tracking-tighter text-foreground leading-[0.9] mb-8">
-              Jay <br/>Chafekar.
-            </motion.h1>
-            
-            <motion.h2 variants={slideUp} className="text-2xl md:text-4xl font-light text-muted-foreground mb-12 flex items-center gap-2">
-              <span className="font-serif italic text-foreground/70">I am a</span>
-              <span className="font-medium text-foreground">{typedRole}</span>
-              <span className="inline-block w-0.5 h-[1em] bg-primary animate-pulse ml-1" />
-            </motion.h2>
-            
-            <motion.div variants={slideUp} className="flex flex-wrap gap-6 items-center">
-              <Button size="lg" onClick={() => scrollToSection("projects")} className="rounded-none bg-foreground text-background hover:bg-foreground/90 font-medium" data-testid="button-view-projects">
-                View Projects
+  return (
+    <div className="min-h-screen bg-[#0d0d0d] text-white font-sans selection:bg-primary/30 selection:text-primary">
+      {/* Icon-Only Pill Navigation */}
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4">
+        <nav className="flex items-center gap-2 p-2 bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-[14px]">
+          <button 
+            onClick={() => scrollToSection("hero")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "hero" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-hero"
+          >
+            <Home className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scrollToSection("experience")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "experience" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-experience"
+          >
+            <Briefcase className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scrollToSection("skills")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "skills" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-skills"
+          >
+            <Code2 className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scrollToSection("projects")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "projects" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-projects"
+          >
+            <FolderOpen className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scrollToSection("contact")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "contact" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-contact"
+          >
+            <Mail className="w-5 h-5" />
+          </button>
+        </nav>
+        <button 
+          className="p-3 bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-full text-white/60 hover:text-white transition-colors"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          data-testid="button-theme-toggle"
+        >
+          {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+      </div>
+
+      <main className="pb-24 pt-32">
+        {/* ── Hero Section (Sawad Framer Aesthetic) ─────────────────────────────────── */}
+        <section id="hero" className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row gap-10 items-start">
+          {/* Left Column - Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full md:w-[280px] shrink-0 bg-white rounded-[22px] p-7 relative"
+          >
+            <div className="absolute -bottom-4 -right-4">
+              <div className="bg-primary text-white text-lg px-3 py-3 rounded-full shadow-lg rotate-12 border-4 border-[#0d0d0d]">
+                🔥
+              </div>
+            </div>
+            <div className="absolute inset-0 border border-primary/20 border-dashed m-4 pointer-events-none" style={{borderRadius: '50%'}}></div>
+
+            <div className="w-[150px] h-[185px] mx-auto bg-gradient-to-b from-[#111] to-[#222] rounded-[14px] flex flex-col items-center justify-center shadow-inner relative overflow-hidden mb-6">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center text-white font-bold text-xl shadow-lg relative z-10">
+                JC
+              </div>
+              <span className="text-[10px] text-white/40 mt-4 absolute bottom-4">Photo coming soon</span>
+            </div>
+
+            <div className="text-center mb-6">
+              <h1 className="text-[#111] font-bold text-xl mb-1">Jay Chafekar</h1>
+              <p className="text-xs text-gray-500 font-medium">Eng @ Sky · CS @ Westminster</p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3">
+              <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+                <Github className="w-5 h-5" />
+              </a>
+              <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+              <a href="mailto:contact@example.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+                <Mail className="w-5 h-5" />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Content */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex-1"
+          >
+            <div className="min-h-[180px] mb-4">
+              <h2 className="font-black text-[clamp(48px,7vw,88px)] text-white leading-[0.95] tracking-tight uppercase">
+                {firstWord}
+              </h2>
+              <h2 className="font-black text-[clamp(48px,7vw,88px)] text-[#282828] leading-[0.95] tracking-tight uppercase">
+                {remainingWords || "\u00A0"}
+              </h2>
+            </div>
+
+            <p className="text-sm text-white/40 max-w-md mb-8 leading-relaxed">
+              Software engineer building scalable systems and elegant interfaces. Currently at Sky, previously developing backend solutions for incident management.
+            </p>
+
+            <div className="flex items-center gap-8 mb-8">
+              <div>
+                <div className="font-black text-4xl text-white">2+</div>
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Years Exp</div>
+              </div>
+              <div>
+                <div className="font-black text-4xl text-white">6+</div>
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Projects</div>
+              </div>
+              <div>
+                <div className="font-black text-4xl text-white">2</div>
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Companies</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-primary rounded-2xl p-6 relative group overflow-hidden transition-transform hover:-translate-y-1">
+                <p className="text-white font-bold text-sm tracking-widest leading-relaxed">
+                  TYPESCRIPT · REACT ·<br/>NODE.JS · PYTHON
+                </p>
+                <div className="absolute bottom-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm group-hover:bg-white group-hover:text-primary transition-colors">
+                  <ArrowUpRight className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="bg-secondary rounded-2xl p-6 relative group overflow-hidden transition-transform hover:-translate-y-1">
+                <p className="text-[#111] font-bold text-sm tracking-widest leading-relaxed">
+                  JAVA · DJANGO ·<br/>POSTGRESQL · AWS
+                </p>
+                <div className="absolute bottom-4 right-4 w-10 h-10 bg-[#111]/10 rounded-full flex items-center justify-center text-[#111] backdrop-blur-sm group-hover:bg-[#111] group-hover:text-secondary transition-colors">
+                  <ArrowUpRight className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex gap-4">
+              <Button asChild size="lg" className="rounded-full bg-white text-[#111] hover:bg-gray-200 font-bold px-8">
+                <a href="/cv.pdf" download>Download CV</a>
               </Button>
-              <Button size="lg" variant="ghost" onClick={() => scrollToSection("contact")} className="rounded-none hover:bg-transparent hover:text-primary transition-colors px-0" data-testid="button-contact">
-                Get In Touch <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-              <Button size="lg" variant="ghost" asChild className="rounded-none hover:bg-transparent hover:text-primary transition-colors px-0 text-muted-foreground" data-testid="button-download-cv">
-                <a href="/cv.pdf" download="Jay_Chafekar_CV.pdf">
-                  Download CV <Download className="w-4 h-4 ml-1" />
-                </a>
-              </Button>
-            </motion.div>
+            </div>
           </motion.div>
         </section>
 
         {/* ── Experience ───────────────────────────────────────────────────── */}
-        <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-            <motion.div variants={slideUp} className="mb-16">
-              <h3 className="text-4xl font-bold tracking-tight mb-2">Experience</h3>
-              <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">01 // Work History</p>
-            </motion.div>
-
-            <div className="space-y-20">
-              {EXPERIENCE.map((exp, i) => (
-                <motion.div key={i} variants={slideUp} className="group relative">
-                  <div className="grid md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
-                    <div className="md:text-right border-l md:border-l-0 md:border-r border-border pl-6 md:pl-0 md:pr-6 md:py-2">
-                      <h4 className="text-2xl font-bold text-foreground">{exp.company}</h4>
-                      <p className="text-primary font-medium mt-1 mb-3">{exp.role}</p>
-                      <p className="text-sm font-mono text-muted-foreground mb-1">{exp.period}</p>
-                      <p className="text-sm text-muted-foreground">{exp.location}</p>
-                    </div>
-                    <div>
-                      <p className="text-lg text-foreground/80 leading-relaxed mb-6">{exp.description}</p>
-                      <ul className="space-y-3">
-                        {exp.highlights.map((h, j) => (
-                          <li key={j} className="flex gap-4 text-muted-foreground">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors mt-2.5 shrink-0" />
-                            <span className="leading-relaxed">{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+        <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 mt-20">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
+              <span className="text-primary font-mono text-sm tracking-widest">01 //</span> Experience
+            </h3>
+          </div>
+          
+          <div className="space-y-6">
+            {EXPERIENCE.map((exp, i) => (
+              <div key={i} className="group flex flex-col md:flex-row gap-8 p-8 rounded-[22px] bg-[#111111] border border-white/5 hover:border-primary/50 transition-colors relative overflow-hidden">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-primary transition-colors"></div>
+                <div className="w-full md:w-64 shrink-0">
+                  <h4 className="text-xl font-bold text-white mb-1">{exp.company}</h4>
+                  <p className="text-primary font-medium mb-2">{exp.role}</p>
+                  <p className="text-sm text-white/40 font-mono">{exp.period}</p>
+                  <p className="text-sm text-white/40">{exp.location}</p>
+                </div>
+                <div className="flex-1">
+                  <p className="text-white/60 mb-6 leading-relaxed">{exp.description}</p>
+                  <ul className="space-y-3">
+                    {exp.highlights.map((h, j) => (
+                      <li key={j} className="flex items-start gap-3 text-sm text-white/50">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                        <span className="leading-snug">{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* ── Skills ───────────────────────────────────────────────────────── */}
-        <section id="skills" className="py-24 bg-secondary/20">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-              <motion.div variants={slideUp} className="mb-16">
-                <h3 className="text-4xl font-bold tracking-tight mb-2">Expertise</h3>
-                <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">02 // Technical Skills</p>
-              </motion.div>
-
-              <div className="grid gap-12 max-w-4xl">
-                {Object.entries(SKILLS).map(([category, items], i) => (
-                  <motion.div key={category} variants={slideUp} className="grid md:grid-cols-[200px_1fr] gap-4 md:gap-8 items-start">
-                    <h4 className="font-mono text-sm font-semibold tracking-widest uppercase text-foreground/80 pt-2">{category}</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {items.map((skill) => (
-                        <span key={skill} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-background border border-border/50 hover:border-primary/50 hover:text-foreground transition-colors cursor-default">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
+        <section id="skills" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
+              <span className="text-primary font-mono text-sm tracking-widest">02 //</span> Skills
+            </h3>
+          </div>
+          
+          <div className="grid gap-10">
+            {Object.entries(SKILLS).map(([category, skills]) => (
+              <div key={category} className="grid md:grid-cols-[200px_1fr] gap-6 items-start">
+                <h4 className="text-lg font-medium text-white/80">{category}</h4>
+                <div className="flex flex-wrap gap-3">
+                  {skills.map((skill) => (
+                    <span key={skill} className="px-4 py-2 rounded-full bg-[#111] border border-white/10 text-sm text-white/60 hover:border-primary hover:text-white transition-colors cursor-default">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </motion.div>
+            ))}
           </div>
         </section>
 
         {/* ── Projects ─────────────────────────────────────────────────────── */}
-        <section id="projects" className="py-24 max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-            <motion.div variants={slideUp} className="mb-16 flex items-end justify-between">
-              <div>
-                <h3 className="text-4xl font-bold tracking-tight mb-2">Selected Works</h3>
-                <p className="text-muted-foreground font-mono text-sm tracking-widest uppercase">03 // Projects</p>
+        <section id="projects" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
+          <div className="mb-12 flex justify-between items-end">
+            <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
+              <span className="text-primary font-mono text-sm tracking-widest">03 //</span> Projects
+            </h3>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {PROJECTS.map((project, i) => (
+              <div 
+                key={i}
+                className="group relative p-8 rounded-[22px] bg-[#111111] border border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,92,43,0.1)] cursor-pointer flex flex-col h-full"
+                onClick={() => openProject(project)}
+                data-testid={`card-project-${i}`}
+              >
+                <div className="absolute top-8 right-8 text-4xl font-black text-white/5 group-hover:text-primary/10 transition-colors">
+                  0{i + 1}
+                </div>
+                <div className="mb-6 flex-1 relative z-10">
+                  <p className="font-mono text-primary text-xs uppercase tracking-widest mb-3">{project.subtitle}</p>
+                  <h4 className="text-2xl font-bold text-white mb-4">{project.title}</h4>
+                  <p className="text-sm text-white/50 leading-relaxed line-clamp-3">{project.description}</p>
+                </div>
+                <div className="flex flex-wrap gap-2 relative z-10">
+                  {project.tech.slice(0, 3).map((t) => (
+                    <span key={t} className="text-xs font-mono text-white/40 bg-white/5 px-2.5 py-1 rounded">
+                      {t}
+                    </span>
+                  ))}
+                  {project.tech.length > 3 && (
+                    <span className="text-xs font-mono text-white/40 bg-white/5 px-2.5 py-1 rounded">
+                      +{project.tech.length - 3}
+                    </span>
+                  )}
+                </div>
               </div>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {PROJECTS.map((project, i) => (
-                <motion.div 
-                  key={project.title} 
-                  variants={slideUp} 
-                  className="group relative bg-background border border-border p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_hsl(var(--primary))]"
-                >
-                  <div className="absolute top-6 right-8 text-4xl font-bold text-muted/30 font-mono pointer-events-none transition-colors group-hover:text-primary/10">
-                    {String(i + 1).padStart(2, '0')}
-                  </div>
-                  
-                  <p className="font-mono text-xs tracking-widest uppercase text-primary mb-4">{project.subtitle}</p>
-                  <h4 className="text-2xl font-bold mb-4 pr-12">{project.title}</h4>
-                  <p className="text-muted-foreground leading-relaxed mb-8 flex-1">{project.description}</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {project.tech.slice(0, 4).map((t) => (
-                      <span key={t} className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-1">{t}</span>
-                    ))}
-                    {project.tech.length > 4 && <span className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-1">+{project.tech.length - 4}</span>}
-                  </div>
-                  
-                  <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-6">
-                    <button 
-                      onClick={() => openProject(project)}
-                      className="text-sm font-semibold tracking-wide flex items-center gap-2 hover:text-primary transition-colors"
-                      data-testid={`button-details-${project.title}`}
-                    >
-                      View Details <ExternalLink className="w-4 h-4" />
-                    </button>
-                    <a 
-                      href={project.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-muted-foreground hover:text-foreground transition-colors p-2"
-                      aria-label="View on GitHub"
-                    >
-                      <Github className="w-5 h-5" />
-                    </a>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            ))}
+          </div>
         </section>
 
         {/* ── Contact ──────────────────────────────────────────────────────── */}
-        <section id="contact" className="py-32 border-t border-border">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
-            <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="grid md:grid-cols-2 gap-16">
-              <motion.div variants={slideUp}>
-                <h3 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">Let's build<br/>something.</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-md mb-12">
-                  Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-                </p>
-                <div className="space-y-4 font-mono text-sm tracking-wide">
-                  <a href="mailto:chafekarjay12@gmail.com" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
-                    <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" /> chafekarjay12@gmail.com
-                  </a>
-                  <a href="https://github.com/Jaychafekar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
-                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform" /> github.com/Jaychafekar
-                  </a>
-                  <a href="https://linkedin.com/in/jaychafekar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors group">
-                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" /> linkedin.com/in/jaychafekar
-                  </a>
-                </div>
-              </motion.div>
+        <section id="contact" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
+          <div className="grid md:grid-cols-2 gap-16">
+            <div>
+              <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4 mb-6">
+                <span className="text-primary font-mono text-sm tracking-widest">04 //</span> Contact
+              </h3>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                Let's build something <br/>
+                <span className="text-primary">together.</span>
+              </h2>
+              <p className="text-white/50 mb-8 max-w-md">
+                I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+              </p>
               
-              <motion.div variants={slideUp} className="bg-background">
-                <ContactForm />
-              </motion.div>
-            </motion.div>
+              <div className="space-y-4 font-mono text-sm">
+                <a href="mailto:jay.chafekar@example.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Mail className="w-5 h-5" /> jay.chafekar@example.com
+                </a>
+                <a href="https://linkedin.com/in/jay-chafekar" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Linkedin className="w-5 h-5" /> linkedin.com/in/jay-chafekar
+                </a>
+              </div>
+            </div>
+            
+            <div className="bg-[#111111] p-8 rounded-[22px] border border-white/5">
+              <ContactForm />
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="py-8 text-center text-sm font-mono text-muted-foreground border-t border-border bg-secondary/10">
-        <p>Designed & Built by Jay Chafekar © {new Date().getFullYear()}</p>
+      <footer className="border-t border-white/5 py-8 text-center text-sm text-white/30 font-mono flex flex-col items-center justify-center">
+        <p>© {new Date().getFullYear()} Jay Chafekar. All rights reserved.</p>
       </footer>
 
       <ProjectModal project={selectedProject} open={modalOpen} onClose={() => setModalOpen(false)} />
