@@ -43,42 +43,37 @@ const TYPED_ROLES = [
 ];
 
 const SKILLS = {
-  "Languages": ["Java", "Python", "C", "C++", "C#", "JavaScript (ES6+)", "TypeScript", "SQL", "PHP"],
-  "Frameworks & Libraries": ["React", "Django", "Spring Boot", "Flask", "Bootstrap", "Tailwind CSS", "TensorFlow", "Keras", "OpenCV"],
-  "Databases": ["MySQL", "PostgreSQL", "SQLite", "MongoDB"],
-  "Tools & Platforms": ["Git", "GitHub", "Docker", "Postman", "Swagger", "Linux", "VS Code", "Figma", "CI/CD Pipelines"],
-  "AI & ML": ["Deep Learning", "CNN Models", "LSTM Networks", "Computer Vision", "Deepfake Detection", "Minimax & Alpha-Beta Pruning"],
-  "Concepts": ["Full-Stack Development", "RESTful APIs", "MVC Architecture", "Agile/Scrum", "OOP", "Data Structures & Algorithms", "System Design"],
+  "Languages": ["Java", "Python", "JavaScript (ES6+)", "SQL", "C++", "C"],
+  "Backend": ["Django", "FastAPI", "JAX-RS", "REST APIs", "OOP", "MVC", "Microservice Patterns"],
+  "Frontend": ["React", "Vite", "HTML5", "CSS3", "Bootstrap"],
+  "Databases & Testing": ["MySQL", "PostgreSQL", "SQLite", "MongoDB", "JUnit", "pytest", "Unit & Integration Testing"],
+  "DevOps & Tools": ["Git", "GitHub", "Docker", "Docker Compose", "Linux", "CI/CD", "Maven", "Swagger", "Postman"],
+  "Practices": ["Agile/Scrum", "Code Reviews", "Pair Programming", "TDD", "Technical Documentation"],
+  "CS Fundamentals": ["Data Structures", "BFS/DFS", "Edmonds-Karp", "Minimax/Alpha-Beta", "TensorFlow"],
 };
 
 const EXPERIENCE = [
   {
-    company: "Sky Ltd",
-    role: "Software Engineer",
-    period: "Jan 2025 – Apr 2025",
-    location: "London, UK",
-    description: "Developed scalable web applications and enhanced user experiences using React and modularised backend systems. Collaborated with QA and backend teams, participated in code reviews, and documented core features to ensure maintainable, high-quality software.",
+    company: "London Success Academy",
+    role: "Software Engineering Intern",
+    period: "May 2026 – Present",
+    location: "London (Remote)",
+    description: "Building a full-stack web application covering REST APIs, user authentication, and database integration, within an Agile team environment.",
     highlights: [
-      "Engineered a real-time React health platform for 5,000+ users, boosting dashboard performance by 30%",
-      "Designed modular database schemas for 10+ modules, accelerating feature rollout",
-      "Mentored 12 team members on architecture and coding standards",
-      "Streamlined front-end code, reducing page load time from 2.5s to 1.9s",
-      "Participated in code reviews, fixing 30+ critical bugs",
-      "Authored technical documentation for 10 core features",
+      "Building a full-stack web app in Python and JavaScript covering REST APIs, user authentication, and database integration",
+      "Working through weekly code reviews with mentors, pairing Git workflow and Agile practices with testing on what I push to GitHub",
     ],
   },
   {
     company: "Technokraft Ltd",
-    role: "Backend Developer",
+    role: "Backend Developer Intern",
     period: "Jun 2023 – Aug 2023",
-    location: "India",
-    description: "Built and maintained backend systems, RESTful APIs, and dashboards, improving data accessibility and operational efficiency for stakeholders.",
+    location: "Nashik, India",
+    description: "Wrote internal REST APIs for an IT incident reporting workflow and worked on operational dashboards aimed at non-technical users.",
     highlights: [
-      "Developed RESTful APIs for IT incident reporting, maintaining 99.9% uptime across 65+ weekly incidents",
-      "Created 3 interactive dashboards, reducing reporting time by 25% for 50+ stakeholders",
-      "Optimised 15+ SQL queries, improving response times by 20% for critical endpoints",
-      "Automated incident tracking workflows, cutting manual effort by 30% across 3 IT teams",
-      "Supported architecture and code design discussions",
+      "Wrote internal REST APIs for an IT incident reporting workflow used by internal teams",
+      "Worked on operational dashboards that pulled from those APIs, aimed mainly at non-technical users",
+      "Tuned SQL on the slower reporting endpoints",
     ],
   },
 ];
@@ -86,63 +81,43 @@ const EXPERIENCE = [
 const PROJECTS = [
   {
     title: "PixelProof",
-    subtitle: "Deepfake Detection & Prevention System",
-    description: "An AI-powered web application that detects manipulated media using deep learning and computer vision. Analyzes uploaded images/videos to identify deepfakes through AI-based prediction models.",
-    longDescription: "PixelProof tackles one of the most pressing challenges in the digital age — the proliferation of AI-generated fake media. Built with a custom CNN pipeline, the system preprocesses video frames, extracts facial regions using OpenCV, and passes them through a trained Keras model to produce a confidence score. The React frontend provides a clean drag-and-drop upload experience with real-time prediction feedback, while Flask serves as a lightweight inference API.",
-    tech: ["Python", "Flask", "TensorFlow", "Keras", "OpenCV", "React", "JavaScript"],
+    subtitle: "Deepfake Detection & Verification Platform",
+    description: "Final-year project built as four Docker Compose services — a FastAPI inference API, a fine-tuned MobileNetV2 model, a React/Vite review UI, and a SQLite store. Reached 69.65% cross-dataset accuracy and 0.7772 ROC-AUC on a held-out corpus. Every verdict comes back HMAC-SHA256 signed over image hash, verdict, model version, and timestamp — a tamper-evident audit trail. Switched from a CNN-LSTM to MobileNetV2 after the temporal model kept overfitting. pytest covers signing, verification, and inference-error paths.",
+    longDescription: "Final-year project built as four Docker Compose services — a FastAPI inference API, a fine-tuned MobileNetV2 model, a React/Vite review UI, and a SQLite store. Reached 69.65% cross-dataset accuracy and 0.7772 ROC-AUC on a held-out corpus. Every verdict comes back HMAC-SHA256 signed over image hash, verdict, model version, and timestamp — a tamper-evident audit trail. Switched from a CNN-LSTM to MobileNetV2 after the temporal model kept overfitting. pytest covers signing, verification, and inference-error paths.",
+    tech: ["FastAPI", "TensorFlow", "MobileNetV2", "React", "Vite", "Docker", "SQLite", "pytest"],
     link: "https://github.com/Jaychafekar/PixelProof",
-    highlights: ["Custom CNN deepfake detection model", "Real-time image/video analysis", "Flask REST API + React frontend", "OpenCV face extraction pipeline"],
-    year: "2024",
+    highlights: ["69.65% cross-dataset accuracy, 0.7772 ROC-AUC", "HMAC-SHA256 tamper-evident verdict signing", "Four Docker Compose services", "pytest covers signing, verification, and inference-error paths"],
+    year: "2025–26",
   },
   {
     title: "Bookstore REST API",
     subtitle: "Java + JAX-RS Backend System",
-    description: "A modular RESTful API supporting CRUD operations for 500+ books and customers. Achieved 100% automated test pass rate with Postman and 25% faster SQL query response times.",
-    longDescription: "A production-grade backend built in Java using JAX-RS, designed to handle the complete lifecycle of a bookstore's operations. Exposes well-structured endpoints for managing book inventory, customer registration, shopping carts, and orders. MySQL powers the relational data model. Validated via 12+ weekly API scenarios using Postman. Swagger documentation enables seamless frontend integration.",
-    tech: ["Java", "JAX-RS", "REST APIs", "MySQL", "Apache Tomcat", "Postman", "Swagger"],
+    description: "A layered Java REST service on JAX-RS — thin resource classes calling into a service layer, business logic kept unit-testable in isolation under JUnit. Books and customers modelled as related resources, with idempotent PUT/DELETE and POST for creation; proper HTTP status codes (201/204/404/409) rather than 200-for-everything. SQL persistence with indexed lookups on ISBN and customer ID. JAX-RS annotations generate a Swagger/OpenAPI spec that stays in sync with the code.",
+    longDescription: "A layered Java REST service on JAX-RS — thin resource classes calling into a service layer, business logic kept unit-testable in isolation under JUnit. Books and customers modelled as related resources, with idempotent PUT/DELETE and POST for creation; proper HTTP status codes (201/204/404/409) rather than 200-for-everything. SQL persistence with indexed lookups on ISBN and customer ID. JAX-RS annotations generate a Swagger/OpenAPI spec that stays in sync with the code.",
+    tech: ["Java", "JAX-RS", "SQL", "Swagger", "JUnit"],
     link: "https://github.com/Jaychafekar",
-    highlights: ["500+ books & customers CRUD", "100% Postman automated test pass rate", "25% faster SQL query response times", "Full Swagger API documentation"],
-    year: "2025",
-  },
-  {
-    title: "Max Flow Network",
-    subtitle: "Algorithm Implementation in Java",
-    description: "Implemented the Edmonds-Karp algorithm optimising paths for 1,000+ nodes across multiple networks. Reduced runtime by 12% on complex large-scale datasets.",
-    longDescription: "A graph algorithm project implementing the Edmonds-Karp max-flow algorithm — a BFS-based implementation of Ford-Fulkerson — capable of handling networks with 1,000+ nodes. Includes automated flow reports and debugging utilities that accelerated testing of 50+ scenarios. Technical documentation supports replication and knowledge transfer across development teams.",
-    tech: ["Java", "Graph Algorithms", "BFS", "Data Structures"],
-    link: "https://github.com/Jaychafekar",
-    highlights: ["Edmonds-Karp algorithm for 1,000+ nodes", "12% runtime reduction on large datasets", "Automated flow reports & debugging utilities", "Documentation for 2 development teams"],
+    highlights: ["Layered architecture — resource, service, persistence", "Proper HTTP status codes (201/204/404/409)", "SQL persistence with indexed lookups on ISBN and customer ID", "JAX-RS annotations generate a Swagger/OpenAPI spec"],
     year: "2025",
   },
   {
     title: "WeatherDashboard",
     subtitle: "iOS Weather App",
-    description: "A native iOS weather application delivering real-time weather updates, forecasts, and interactive map visualisation. Built with MVVM architecture, CoreLocation, and SwiftData for local persistence.",
-    longDescription: "A polished native iOS app built entirely in SwiftUI using MVVM architecture. Integrates the OpenWeather API for current conditions, hourly and 7-day forecasts, and UV index data. CoreLocation handles dynamic user location detection, while MapKit powers an interactive weather map overlay. SwiftData persists recently viewed cities locally, enabling fast load times and offline access.",
-    tech: ["Swift", "SwiftUI", "MVVM", "OpenWeather API", "CoreLocation", "MapKit", "SwiftData"],
+    description: "A native iOS weather app delivering real-time weather and forecasts with an interactive map view. Built with MVVM architecture using SwiftUI, CoreLocation for location services, MapKit for map visualisation, and SwiftData for local persistence. Integrates the OpenWeather API for current conditions and forecast data.",
+    longDescription: "A native iOS weather app delivering real-time weather and forecasts with an interactive map view. Built with MVVM architecture using SwiftUI, CoreLocation for location services, MapKit for map visualisation, and SwiftData for local persistence. Integrates the OpenWeather API for current conditions and forecast data.",
+    tech: ["Swift", "SwiftUI", "MVVM", "CoreLocation", "MapKit", "SwiftData", "OpenWeather API"],
     link: "https://github.com/Jaychafekar",
-    highlights: ["MVVM architecture in SwiftUI", "CoreLocation + MapKit integration", "7-day forecast & UV index", "SwiftData local persistence"],
+    highlights: ["MVVM architecture in SwiftUI", "CoreLocation + MapKit integration", "OpenWeather API for current conditions and forecast data", "SwiftData local persistence"],
     year: "2024",
-  },
-  {
-    title: "Algorithms Project",
-    subtitle: "AI & Graph Algorithms in Python",
-    description: "BFS graph search for 1,000+ nodes, Tic-Tac-Toe AI with minimax and alpha-beta pruning, and optimised data structures achieving 35% efficiency improvement.",
-    longDescription: "A collection of algorithm implementations demonstrating applied computer science. Includes BFS graph traversal for 1,000+ node networks, a Tic-Tac-Toe AI opponent using minimax with alpha-beta pruning for optimal gameplay, and data structure optimisations that increased algorithm efficiency by 35%. Structured documentation supports reproducibility and collaboration.",
-    tech: ["Python", "Graph Algorithms", "BFS", "Minimax", "Alpha-Beta Pruning", "Data Structures"],
-    link: "https://github.com/Jaychafekar",
-    highlights: ["BFS for 1,000+ node graphs", "Minimax AI with alpha-beta pruning", "35% data structure efficiency gain", "Structured academic documentation"],
-    year: "2025",
   },
   {
     title: "HealthCheck Web App",
-    subtitle: "Team Health Monitoring Platform",
-    description: "A full-stack team health monitoring platform with anonymous voting, department summaries, and management dashboards with role-based access control.",
-    longDescription: "Django-powered platform for engineering teams to assess health across morale, delivery, and collaboration dimensions. Team members anonymously vote on indicators, and results aggregate into department summaries visible on a management dashboard. Role-based access separates team member, team lead, and admin views.",
-    tech: ["Python", "Django", "SQLite", "HTML", "CSS", "Bootstrap", "JavaScript"],
+    subtitle: "Sky × University of Westminster — Industry Collaboration",
+    description: "3-person team project with Sky engineers running code reviews and giving feedback throughout the module. Built the Django backend: a custom User model extending AbstractUser with five roles (employee, team lead, department lead, senior manager, admin), role-based access on every view, and a domain model across Departments, Teams, Sessions, Health Cards, and Votes. Wrote views, forms, and server-rendered Bootstrap templates for each role's dashboard, plus management commands for permission setup.",
+    longDescription: "3-person team project with Sky engineers running code reviews and giving feedback throughout the module. Built the Django backend: a custom User model extending AbstractUser with five roles (employee, team lead, department lead, senior manager, admin), role-based access on every view, and a domain model across Departments, Teams, Sessions, Health Cards, and Votes. Wrote views, forms, and server-rendered Bootstrap templates for each role's dashboard, plus management commands for permission setup.",
+    tech: ["Django", "Python", "Bootstrap", "SQL"],
     link: "https://github.com/Jaychafekar",
-    highlights: ["Role-based access control (3 tiers)", "Anonymous voting system", "Department-level dashboards", "Historical trend visualisation"],
-    year: "2024",
+    highlights: ["Custom AbstractUser model with five role tiers", "Role-based access on every view", "Domain model: Departments, Teams, Sessions, Health Cards, Votes", "Industry code reviews from Sky engineers"],
+    year: "2025",
   },
 ];
 
@@ -447,7 +422,7 @@ export default function Portfolio() {
 
             <div className="text-center mb-6">
               <h1 className="text-[#111] font-bold text-xl mb-1">Jay Chafekar</h1>
-              <p className="text-xs text-gray-500 font-medium">Eng @ Sky · CS @ Westminster</p>
+              <p className="text-xs text-gray-500 font-medium">Intern @ London Success Academy · CS @ Westminster</p>
             </div>
 
             <div className="flex items-center justify-center gap-3">
@@ -457,7 +432,7 @@ export default function Portfolio() {
               <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="mailto:contact@example.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+              <a href="mailto:chafekarjay12@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -480,7 +455,7 @@ export default function Portfolio() {
             </div>
 
             <p className="text-sm text-white/40 max-w-md mb-8 leading-relaxed">
-              Software engineer building scalable systems and elegant interfaces. Currently at Sky, previously developing backend solutions for incident management.
+              Final-year CS student at Westminster, graduating July 2026. Building full-stack web apps across Python, Django, FastAPI, React, and Java — with a focus on clean API design and tested, maintainable code.
             </p>
 
             <div className="flex items-start gap-10 mb-8">
@@ -611,17 +586,25 @@ export default function Portfolio() {
                   <h4 className="text-2xl font-bold text-white mb-4">{project.title}</h4>
                   <p className="text-sm text-white/50 leading-relaxed line-clamp-3">{project.description}</p>
                 </div>
-                <div className="flex flex-wrap gap-2 relative z-10">
-                  {project.tech.slice(0, 3).map((t) => (
+                <div className="flex flex-wrap gap-2 relative z-10 mb-5">
+                  {project.tech.map((t) => (
                     <span key={t} className="text-xs font-mono text-white/40 bg-white/5 px-2.5 py-1 rounded">
                       {t}
                     </span>
                   ))}
-                  {project.tech.length > 3 && (
-                    <span className="text-xs font-mono text-white/40 bg-white/5 px-2.5 py-1 rounded">
-                      +{project.tech.length - 3}
-                    </span>
-                  )}
+                </div>
+                <div className="flex gap-3 relative z-10" onClick={(e) => e.stopPropagation()}>
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-full transition-all"
+                  >
+                    <Github className="w-3.5 h-3.5" /> GitHub
+                  </a>
+                  <span className="flex items-center gap-1.5 text-xs font-mono text-white/30 border border-white/5 px-3 py-1.5 rounded-full cursor-default">
+                    <ExternalLink className="w-3.5 h-3.5" /> Demo coming soon
+                  </span>
                 </div>
               </div>
             ))}
@@ -644,8 +627,8 @@ export default function Portfolio() {
               </p>
               
               <div className="space-y-4 font-mono text-sm">
-                <a href="mailto:jay.chafekar@example.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
-                  <Mail className="w-5 h-5" /> jay.chafekar@example.com
+                <a href="mailto:chafekarjay12@gmail.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Mail className="w-5 h-5" /> chafekarjay12@gmail.com
                 </a>
                 <a href="https://linkedin.com/in/jay-chafekar" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
                   <Linkedin className="w-5 h-5" /> linkedin.com/in/jay-chafekar

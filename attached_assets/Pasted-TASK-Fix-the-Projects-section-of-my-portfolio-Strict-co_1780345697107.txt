@@ -1,0 +1,181 @@
+TASK: Fix the Projects section of my portfolio. Strict content-replacement only.
+This is not a creative task. Follow every rule below without deviation.
+
+==========================================================
+NON-NEGOTIABLE RULES — NO EXCEPTIONS:
+==========================================================
+1. Use the descriptions and tags I provide below VERBATIM. Copy-paste only. 
+   Do NOT rewrite, paraphrase, embellish, or "improve" the wording.
+2. Do NOT invent any metric, number, percentage, or technical claim that 
+   is not in my text below.
+3. Do NOT add filler adjectives ("powerful", "robust", "scalable", 
+   "cutting-edge", "elegant"). My text is final.
+4. Every tag must be visible. REMOVE any "+N" collapsed tag pill. 
+   No hidden tags.
+5. Keep exactly FIVE project cards in the order listed below. Delete 
+   every other project card (specifically: Algorithms Project) from 
+   the source code completely — not commented out, not hidden, fully 
+   removed.
+6. Only touch the Projects section. Do not modify Hero, Experience, 
+   Skills, or Contact.
+7. After finishing, output: (a) every file you edited or deleted, 
+   (b) written confirmation that all five descriptions match my verbatim 
+   text, and (c) confirmation that the removed cards are deleted from 
+   source, not hidden.
+
+==========================================================
+THE FIVE PROJECTS — KEEP EXACTLY THESE, IN THIS ORDER:
+==========================================================
+
+---------- PROJECT 01 ----------
+Category label (small orange uppercase text above title):
+DEEPFAKE DETECTION & VERIFICATION PLATFORM
+
+Title:
+PixelProof
+
+Description (VERBATIM — do not change a single word):
+Final-year project built as four Docker Compose services — a FastAPI 
+inference API, a fine-tuned MobileNetV2 model, a React/Vite review UI, 
+and a SQLite store. Reached 69.65% cross-dataset accuracy and 0.7772 
+ROC-AUC on a held-out corpus. Every verdict comes back HMAC-SHA256 
+signed over image hash, verdict, model version, and timestamp — a 
+tamper-evident audit trail. Switched from a CNN-LSTM to MobileNetV2 
+after the temporal model kept overfitting. pytest covers signing, 
+verification, and inference-error paths.
+
+Tags (display ALL, no collapse):
+FastAPI, TensorFlow, MobileNetV2, React, Vite, Docker, SQLite, pytest
+
+REMOVE any existing weaker description on this card. The CV-strength 
+description above is the only acceptable version.
+
+
+---------- PROJECT 02 ----------
+Category label:
+JAVA + JAX-RS BACKEND SYSTEM
+
+Title:
+Bookstore REST API
+
+Description (VERBATIM):
+A layered Java REST service on JAX-RS — thin resource classes calling 
+into a service layer, business logic kept unit-testable in isolation 
+under JUnit. Books and customers modelled as related resources, with 
+idempotent PUT/DELETE and POST for creation; proper HTTP status codes 
+(201/204/404/409) rather than 200-for-everything. SQL persistence with 
+indexed lookups on ISBN and customer ID. JAX-RS annotations generate a 
+Swagger/OpenAPI spec that stays in sync with the code.
+
+Tags (display ALL, no collapse):
+Java, JAX-RS, SQL, Swagger, JUnit
+
+EXPLICITLY DELETE from this card (these are invented metrics — they 
+must not appear anywhere on the site):
+- "500+ books and customers"
+- "100% automated test pass rate with Postman"
+- "25% faster SQL query response times"
+- Any mention of "Postman" as a testing tool — the project uses JUnit.
+
+
+---------- PROJECT 03 ----------
+Category label:
+ALGORITHM IMPLEMENTATION IN JAVA
+
+Title:
+Max Flow Network
+
+Description (VERBATIM):
+Implemented Edmonds-Karp on a residual-graph representation, scaling to 
+1,000+ nodes — using BFS for augmenting paths gives O(VE²) and avoids 
+the pathological worst cases of plain Ford-Fulkerson. Picked an 
+adjacency-list representation over an adjacency matrix to keep memory 
+linear in edges, which mattered once node counts crossed several hundred. 
+A small test harness checks flow conservation and edge feasibility on 
+every iteration, with diagnostic dumps so a failure points to a specific 
+augmenting step.
+
+Tags (display ALL, no collapse):
+Java, Graph Algorithms, BFS, Edmonds-Karp
+
+EXPLICITLY DELETE from this card:
+- "Reduced runtime by 12% on complex large-scale datasets"
+This metric is fabricated and must not appear.
+
+
+---------- PROJECT 04 ----------
+Category label:
+IOS WEATHER APP
+
+Title:
+WeatherDashboard
+
+Description (VERBATIM):
+A native iOS weather app delivering real-time weather and forecasts with 
+an interactive map view. Built with MVVM architecture using SwiftUI, 
+CoreLocation for location services, MapKit for map visualisation, and 
+SwiftData for local persistence. Integrates the OpenWeather API for 
+current conditions and forecast data.
+
+Tags (display ALL, no collapse):
+Swift, SwiftUI, MVVM, CoreLocation, MapKit, SwiftData, OpenWeather API
+
+
+---------- PROJECT 05 ----------
+Category label:
+SKY × UNIVERSITY OF WESTMINSTER — INDUSTRY COLLABORATION
+
+Title:
+HealthCheck Web App
+
+Description (VERBATIM):
+3-person team project with Sky engineers running code reviews and giving 
+feedback throughout the module. Built the Django backend: a custom User 
+model extending AbstractUser with five roles (employee, team lead, 
+department lead, senior manager, admin), role-based access on every view, 
+and a domain model across Departments, Teams, Sessions, Health Cards, 
+and Votes. Wrote views, forms, and server-rendered Bootstrap templates 
+for each role's dashboard, plus management commands for permission setup.
+
+Tags (display ALL, no collapse):
+Django, Python, Bootstrap, SQL
+
+REMOVE any existing description on this card that mentions "anonymous 
+voting", "department summaries", or generic phrasing. Use only the 
+verbatim description above.
+
+
+==========================================================
+DELETE THIS PROJECT CARD COMPLETELY:
+==========================================================
+1. Algorithms Project (the BFS / Tic-Tac-Toe minimax card) — remove 
+   from source code, not just hidden.
+2. Any other project card currently rendered that is not one of the 
+   five listed above.
+
+After deletion, the Projects section must render exactly 5 cards, 
+numbered 01, 02, 03, 04, 05 — no more, no less.
+
+
+==========================================================
+CARD UI REQUIREMENTS (apply to all 5 cards):
+==========================================================
+- Card numbering must read 01, 02, 03, 04, 05 (sequential).
+- Each card must display a "GitHub" link button.
+- Each card must display a "Live Demo" button (use "Demo coming soon" 
+  as the label if no live URL — do not hide the button).
+- All tags render inline, fully visible. No "+N" collapsed pill.
+- Card spacing, typography, and layout: keep current design.
+
+
+==========================================================
+FINAL OUTPUT YOU MUST RETURN:
+==========================================================
+1. List every file you edited.
+2. List every file or code block you deleted.
+3. Write this confirmation line, exactly: 
+   "All five project descriptions match the verbatim text provided. 
+   All invented metrics have been removed. Algorithms Project is 
+   fully deleted from source."
+4. If any rule above could not be followed, state which one and why. 
+   Do not silently skip.
