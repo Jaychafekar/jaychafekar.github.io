@@ -21,6 +21,8 @@ import {
   LayoutGrid,
   GraduationCap,
   Award,
+  Phone,
+  User,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -337,7 +339,7 @@ export default function Portfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "experience", "skills", "projects", "contact"];
+      const sections = ["hero", "about", "experience", "skills", "projects", "contact"];
       for (const section of [...sections].reverse()) {
         const el = document.getElementById(section);
         if (el) {
@@ -379,6 +381,13 @@ export default function Portfolio() {
             data-testid="nav-hero"
           >
             <Home className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => scrollToSection("about")} 
+            className={cn("p-2.5 rounded-[10px] transition-colors", activeSection === "about" ? "bg-white/[0.12] text-white" : "text-white/60 hover:text-white")}
+            data-testid="nav-about"
+          >
+            <User className="w-5 h-5" />
           </button>
           <button 
             onClick={() => scrollToSection("experience")} 
@@ -461,7 +470,7 @@ export default function Portfolio() {
               <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="mailto:chafekarjay12@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+              <a href="mailto:jaychafekar312003@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -533,11 +542,33 @@ export default function Portfolio() {
           </motion.div>
         </section>
 
-        {/* ── Experience ───────────────────────────────────────────────────── */}
-        <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 mt-20">
+        {/* ── About ────────────────────────────────────────────────────────── */}
+        <section id="about" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 mt-20">
           <div className="mb-12">
             <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
-              <span className="text-primary font-mono text-sm tracking-widest">01 //</span> Experience
+              <span className="text-primary font-mono text-sm tracking-widest">01 //</span> About Me
+            </h3>
+          </div>
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+              Getting to <span className="text-primary">know me!</span>
+            </h2>
+            <div className="space-y-5 text-white/50 leading-relaxed">
+              <p>
+                I'm a BSc (Hons) Computer Science student at the University of Westminster, with hands-on experience building full-stack web applications. My focus lies in creating responsive user interfaces, building robust backend logic, and implementing secure development practices.
+              </p>
+              <p>
+                I'm passionate about AI-powered systems, modern web development, and software engineering principles. I thrive on solving real-world problems through clean, maintainable code and continuously expanding my technical toolkit.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Experience ───────────────────────────────────────────────────── */}
+        <section id="experience" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
+              <span className="text-primary font-mono text-sm tracking-widest">02 //</span> Experience
             </h3>
           </div>
           
@@ -571,7 +602,7 @@ export default function Portfolio() {
         <section id="skills" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
           <div className="mb-12">
             <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
-              <span className="text-primary font-mono text-sm tracking-widest">02 //</span> Skills
+              <span className="text-primary font-mono text-sm tracking-widest">03 //</span> Skills
             </h3>
           </div>
           
@@ -595,7 +626,7 @@ export default function Portfolio() {
         <section id="projects" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
           <div className="mb-12 flex justify-between items-end">
             <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
-              <span className="text-primary font-mono text-sm tracking-widest">03 //</span> Projects
+              <span className="text-primary font-mono text-sm tracking-widest">04 //</span> Projects
             </h3>
           </div>
           
@@ -644,7 +675,7 @@ export default function Portfolio() {
         <section id="education" className="py-24 max-w-7xl mx-auto px-6 lg:px-12 border-t border-white/5">
           <div className="mb-12">
             <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
-              <span className="text-primary font-mono text-sm tracking-widest">04 //</span> Education & Certifications
+              <span className="text-primary font-mono text-sm tracking-widest">05 //</span> Education & Certifications
             </h3>
           </div>
 
@@ -715,7 +746,7 @@ export default function Portfolio() {
           <div className="grid md:grid-cols-2 gap-16">
             <div>
               <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4 mb-6">
-                <span className="text-primary font-mono text-sm tracking-widest">05 //</span> Contact
+                <span className="text-primary font-mono text-sm tracking-widest">06 //</span> Contact
               </h3>
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
                 Let's build something <br/>
@@ -726,8 +757,14 @@ export default function Portfolio() {
               </p>
               
               <div className="space-y-4 font-mono text-sm">
-                <a href="mailto:chafekarjay12@gmail.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
-                  <Mail className="w-5 h-5" /> chafekarjay12@gmail.com
+                <a href="mailto:jaychafekar312003@gmail.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Mail className="w-5 h-5" /> jaychafekar312003@gmail.com
+                </a>
+                <a href="tel:+447774939653" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Phone className="w-5 h-5" /> +44 7774 939653
+                </a>
+                <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Github className="w-5 h-5" /> github.com/Jaychafekar
                 </a>
                 <a href="https://linkedin.com/in/jay-chafekar" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
                   <Linkedin className="w-5 h-5" /> linkedin.com/in/jay-chafekar
