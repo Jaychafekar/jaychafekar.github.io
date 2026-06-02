@@ -27,6 +27,7 @@ import {
   Wrench,
   Lightbulb,
   Sparkles,
+  Flame,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -449,35 +450,39 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-full md:w-[280px] shrink-0 bg-white rounded-[22px] p-7 relative"
+            className="w-full md:w-[300px] shrink-0 bg-white rounded-[28px] p-6 relative overflow-hidden"
           >
-            <div className="absolute -bottom-4 -right-4">
-              <div className="bg-primary text-white text-lg px-3 py-3 rounded-full shadow-lg rotate-12 border-4 border-[#0d0d0d]">
-                🔥
-              </div>
-            </div>
-            <div className="absolute inset-0 border border-primary/20 border-dashed m-4 pointer-events-none" style={{borderRadius: '50%'}}></div>
+            {/* Decorative dashed orange arcs */}
+            <div className="absolute -top-12 -left-10 w-44 h-44 rounded-full border-[3px] border-dashed border-primary/70 pointer-events-none" />
+            <div className="absolute top-[42%] -left-16 w-48 h-48 rounded-full border-[3px] border-dashed border-primary/40 pointer-events-none" />
 
-            <div className="w-[150px] h-[185px] mx-auto bg-gradient-to-b from-[#111] to-[#222] rounded-[14px] flex flex-col items-center justify-center shadow-inner relative overflow-hidden mb-6">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary to-orange-400 flex items-center justify-center text-white font-bold text-xl shadow-lg relative z-10">
+            <div className="relative z-10 w-full aspect-[4/5] rounded-[22px] bg-gradient-to-br from-primary to-orange-600 flex flex-col items-center justify-center overflow-hidden mb-5">
+              <div className="w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white font-black text-3xl shadow-lg">
                 JC
               </div>
-              <span className="text-[10px] text-white/40 mt-4 absolute bottom-4">Photo coming soon</span>
+              <span className="text-[11px] text-white/70 mt-3">Photo coming soon</span>
             </div>
 
-            <div className="text-center mb-6">
-              <h1 className="text-[#111] font-bold text-xl mb-1">Jay Chafekar</h1>
-              <p className="text-xs text-gray-500 font-medium">Intern @ London Success Academy · CS @ Westminster</p>
+            <h1 className="relative z-10 text-center text-[#111] font-black text-3xl tracking-tight mb-3">Jay Chafekar</h1>
+
+            <div className="relative z-10 flex justify-center mb-3">
+              <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center shadow-lg">
+                <Flame className="w-5 h-5 text-white" aria-hidden="true" />
+              </div>
             </div>
 
-            <div className="flex items-center justify-center gap-3">
-              <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+            <p className="relative z-10 text-center text-sm text-gray-500 font-medium leading-relaxed px-2 mb-6">
+              A Software Engineer building full-stack web applications and AI-powered systems.
+            </p>
+
+            <div className="relative z-10 flex items-center justify-center gap-5">
+              <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-primary hover:text-orange-600 transition-colors">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+              <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-primary hover:text-orange-600 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="mailto:jaychafekar312003@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+              <a href="mailto:jaychafekar312003@gmail.com" aria-label="Email" className="text-primary hover:text-orange-600 transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
