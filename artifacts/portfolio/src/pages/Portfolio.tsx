@@ -493,7 +493,7 @@ export default function Portfolio() {
             </div>
 
             <p className="text-sm text-white/40 max-w-md mb-8 leading-relaxed">
-              Final-year CS student at Westminster, graduating July 2026. Building full-stack web apps across Python, Django, FastAPI, React, and Java — with a focus on clean API design and tested, maintainable code.
+              Building full-stack web applications with Python/Django, FastAPI, React, and Java — crafting clean, testable, and production-ready digital experiences.
             </p>
 
             <div className="flex items-start gap-10 mb-8">
