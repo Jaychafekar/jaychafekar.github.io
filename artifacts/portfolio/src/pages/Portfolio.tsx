@@ -26,6 +26,7 @@ import {
   Database,
   Wrench,
   Lightbulb,
+  Sparkles,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -48,12 +49,12 @@ const TYPED_ROLES = [
 ];
 
 const SKILLS = [
-  { category: "Languages", icon: Code2, items: ["Java", "Python", "JavaScript (ES6+)", "SQL", "C++", "C"] },
-  { category: "Frameworks & Libraries", icon: Layers, items: ["Django", "FastAPI", "JAX-RS", "React", "Vite", "Bootstrap", "HTML5", "CSS3"] },
-  { category: "Databases", icon: Database, items: ["MySQL", "PostgreSQL", "SQLite", "MongoDB"] },
-  { category: "Tools & Platforms", icon: Wrench, items: ["Git", "GitHub", "Docker", "Docker Compose", "Linux", "CI/CD", "Maven", "Swagger", "Postman"] },
-  { category: "Testing & Practices", icon: CheckCircle2, items: ["JUnit", "pytest", "Unit & Integration Testing", "TDD", "Agile/Scrum", "Code Reviews", "Pair Programming", "Technical Documentation"] },
-  { category: "Concepts", icon: Lightbulb, items: ["REST APIs", "OOP", "MVC", "Microservice Patterns", "Data Structures", "BFS/DFS", "Edmonds-Karp", "Minimax/Alpha-Beta", "TensorFlow"] },
+  { category: "Languages", icon: Code2, items: ["Java", "Python", "JavaScript", "PHP", "SQL", "HTML5", "CSS3"] },
+  { category: "Frameworks & Libraries", icon: Layers, items: ["Django", "Laravel", "Bootstrap", "jQuery", "FastAPI"] },
+  { category: "Databases", icon: Database, items: ["MySQL", "SQLite", "Django ORM", "MongoDB"] },
+  { category: "Tools & Platforms", icon: Wrench, items: ["Git", "GitHub", "VS Code", "Linux", "REST APIs", "Postman"] },
+  { category: "Concepts", icon: Lightbulb, items: ["MVC Architecture", "Auth & Authorization", "Database Design", "Responsive Design", "Cybersecurity Basics"] },
+  { category: "AI-Assisted Development", icon: Sparkles, items: ["GitHub Copilot", "Cursor", "Claude", "ChatGPT"] },
 ];
 
 const EXPERIENCE = [
