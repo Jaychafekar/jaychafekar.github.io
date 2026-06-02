@@ -23,6 +23,9 @@ import {
   Award,
   Phone,
   User,
+  Database,
+  Wrench,
+  Lightbulb,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -44,15 +47,14 @@ const TYPED_ROLES = [
   "FULL-STACK DEVELOPER",
 ];
 
-const SKILLS = {
-  "Languages": ["Java", "Python", "JavaScript (ES6+)", "SQL", "C++", "C"],
-  "Backend": ["Django", "FastAPI", "JAX-RS", "REST APIs", "OOP", "MVC", "Microservice Patterns"],
-  "Frontend": ["React", "Vite", "HTML5", "CSS3", "Bootstrap"],
-  "Databases & Testing": ["MySQL", "PostgreSQL", "SQLite", "MongoDB", "JUnit", "pytest", "Unit & Integration Testing"],
-  "DevOps & Tools": ["Git", "GitHub", "Docker", "Docker Compose", "Linux", "CI/CD", "Maven", "Swagger", "Postman"],
-  "Practices": ["Agile/Scrum", "Code Reviews", "Pair Programming", "TDD", "Technical Documentation"],
-  "CS Fundamentals": ["Data Structures", "BFS/DFS", "Edmonds-Karp", "Minimax/Alpha-Beta", "TensorFlow"],
-};
+const SKILLS = [
+  { category: "Languages", icon: Code2, items: ["Java", "Python", "JavaScript (ES6+)", "SQL", "C++", "C"] },
+  { category: "Frameworks & Libraries", icon: Layers, items: ["Django", "FastAPI", "JAX-RS", "React", "Vite", "Bootstrap"] },
+  { category: "Databases", icon: Database, items: ["MySQL", "PostgreSQL", "SQLite", "MongoDB"] },
+  { category: "Tools & Platforms", icon: Wrench, items: ["Git", "GitHub", "Docker", "Docker Compose", "Linux", "CI/CD", "Maven", "Swagger", "Postman"] },
+  { category: "Testing & Practices", icon: CheckCircle2, items: ["JUnit", "pytest", "Unit & Integration Testing", "TDD", "Agile/Scrum", "Code Reviews", "Pair Programming", "Technical Documentation"] },
+  { category: "Concepts", icon: Lightbulb, items: ["REST APIs", "OOP", "MVC", "Microservice Patterns", "Data Structures", "BFS/DFS", "Edmonds-Karp", "Minimax/Alpha-Beta", "TensorFlow"] },
+];
 
 const EXPERIENCE = [
   {
@@ -604,15 +606,24 @@ export default function Portfolio() {
             <h3 className="text-3xl font-bold tracking-tight text-white flex items-center gap-4">
               <span className="text-primary font-mono text-sm tracking-widest">03 //</span> Skills
             </h3>
+            <p className="text-white/40 mt-3 ml-0 md:ml-[3.75rem]">Technologies I work with</p>
           </div>
           
-          <div className="grid gap-10">
-            {Object.entries(SKILLS).map(([category, skills]) => (
-              <div key={category} className="grid md:grid-cols-[200px_1fr] gap-6 items-start">
-                <h4 className="text-lg font-medium text-white/80">{category}</h4>
-                <div className="flex flex-wrap gap-3">
-                  {skills.map((skill) => (
-                    <span key={skill} className="px-4 py-2 rounded-full bg-[#111] border border-white/10 text-sm text-white/60 hover:border-primary hover:text-white transition-colors cursor-default">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+            {SKILLS.map(({ category, icon: Icon, items }) => (
+              <div
+                key={category}
+                className="bg-[#111111] border border-white/5 rounded-[22px] p-6 hover:border-primary/40 transition-colors"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h4 className="text-lg font-bold text-white">{category}</h4>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {items.map((skill) => (
+                    <span key={skill} className="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-sm text-white/60 hover:border-primary hover:text-white transition-colors cursor-default">
                       {skill}
                     </span>
                   ))}
