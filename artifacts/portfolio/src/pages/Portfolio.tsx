@@ -339,7 +339,7 @@ export default function Portfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "about", "experience", "skills", "projects", "contact"];
+      const sections = ["hero", "about", "experience", "skills", "projects", "education", "contact"];
       for (const section of [...sections].reverse()) {
         const el = document.getElementById(section);
         if (el) {
@@ -766,7 +766,7 @@ export default function Portfolio() {
                 <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
                   <Github className="w-5 h-5" /> github.com/Jaychafekar
                 </a>
-                <a href="https://linkedin.com/in/jay-chafekar" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
                   <Linkedin className="w-5 h-5" /> linkedin.com/in/jay-chafekar
                 </a>
               </div>
