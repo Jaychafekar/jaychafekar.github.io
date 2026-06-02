@@ -21,7 +21,6 @@ import {
   LayoutGrid,
   GraduationCap,
   Award,
-  Phone,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
@@ -41,8 +40,6 @@ import { cn } from "@/lib/utils";
 const TYPED_ROLES = [
   "SOFTWARE ENGINEER",
   "FULL-STACK DEVELOPER",
-  "CS STUDENT",
-  "PROBLEM SOLVER",
 ];
 
 const SKILLS = {
@@ -360,7 +357,7 @@ export default function Portfolio() {
   const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   // Split typed role into two display lines
-  const twoWordRoles = ["SOFTWARE ENGINEER", "FULL-STACK DEVELOPER", "CS STUDENT", "PROBLEM SOLVER"];
+  const twoWordRoles = ["SOFTWARE ENGINEER", "FULL-STACK DEVELOPER"];
   const [displayRoleIndex, setDisplayRoleIndex] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setDisplayRoleIndex(i => (i + 1) % twoWordRoles.length), 3400);
@@ -464,7 +461,7 @@ export default function Portfolio() {
               <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="mailto:jaychafekar312003@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
+              <a href="mailto:chafekarjay12@gmail.com" className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#111] hover:bg-gray-200 transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -729,16 +726,10 @@ export default function Portfolio() {
               </p>
               
               <div className="space-y-4 font-mono text-sm">
-                <a href="mailto:jaychafekar312003@gmail.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
-                  <Mail className="w-5 h-5" /> jaychafekar312003@gmail.com
+                <a href="mailto:chafekarjay12@gmail.com" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                  <Mail className="w-5 h-5" /> chafekarjay12@gmail.com
                 </a>
-                <a href="tel:+447774939653" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
-                  <Phone className="w-5 h-5" /> +44 7774 939653
-                </a>
-                <a href="https://github.com/Jaychafekar" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
-                  <Github className="w-5 h-5" /> github.com/Jaychafekar
-                </a>
-                <a href="https://linkedin.com/in/jay-chafekar" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
+                <a href="https://linkedin.com/in/jay-chafekar" className="flex items-center gap-3 text-white/60 hover:text-primary transition-colors">
                   <Linkedin className="w-5 h-5" /> linkedin.com/in/jay-chafekar
                 </a>
               </div>
