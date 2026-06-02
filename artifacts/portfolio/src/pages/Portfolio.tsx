@@ -49,7 +49,7 @@ const TYPED_ROLES = [
 
 const SKILLS = [
   { category: "Languages", icon: Code2, items: ["Java", "Python", "JavaScript (ES6+)", "SQL", "C++", "C"] },
-  { category: "Frameworks & Libraries", icon: Layers, items: ["Django", "FastAPI", "JAX-RS", "React", "Vite", "Bootstrap"] },
+  { category: "Frameworks & Libraries", icon: Layers, items: ["Django", "FastAPI", "JAX-RS", "React", "Vite", "Bootstrap", "HTML5", "CSS3"] },
   { category: "Databases", icon: Database, items: ["MySQL", "PostgreSQL", "SQLite", "MongoDB"] },
   { category: "Tools & Platforms", icon: Wrench, items: ["Git", "GitHub", "Docker", "Docker Compose", "Linux", "CI/CD", "Maven", "Swagger", "Postman"] },
   { category: "Testing & Practices", icon: CheckCircle2, items: ["JUnit", "pytest", "Unit & Integration Testing", "TDD", "Agile/Scrum", "Code Reviews", "Pair Programming", "Technical Documentation"] },
@@ -617,7 +617,7 @@ export default function Portfolio() {
               >
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5 text-primary" />
+                    <Icon className="w-5 h-5 text-primary" aria-hidden="true" />
                   </div>
                   <h4 className="text-lg font-bold text-white">{category}</h4>
                 </div>
