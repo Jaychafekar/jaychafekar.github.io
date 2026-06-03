@@ -112,7 +112,30 @@ const CERTIFICATIONS = [
   { name: "C & C++ Programming", issuer: "TechnoKraft Training & Solution", year: "2022", url: certCpp },
 ];
 
-const PROJECTS = [
+type Project = {
+  title: string;
+  subtitle: string;
+  description: string;
+  longDescription: string;
+  tech: string[];
+  link: string;
+  demo?: string;
+  highlights: string[];
+  year: string;
+};
+
+const PROJECTS: Project[] = [
+  {
+    title: "PineVox",
+    subtitle: "CDR Analytics Platform",
+    description: "A Call Detail Record (CDR) analytics platform built during my London Success Academy internship. A React dashboard with interactive Recharts visualisations, backed by a Node.js + Express REST API secured with JWT authentication and bcrypt password hashing.",
+    longDescription: "A Call Detail Record (CDR) analytics platform built during my London Success Academy internship. The frontend is a React + Vite dashboard styled with TailwindCSS and shadcn/ui, surfacing call analytics through interactive Recharts visualisations with client-side routing via React Router. The backend is a Node.js + Express REST API secured with JWT-based authentication and bcrypt password hashing, serving the CDR data the dashboard consumes.",
+    tech: ["React", "Vite", "TailwindCSS", "shadcn/ui", "Recharts", "React Router", "Node.js", "Express", "JWT", "bcrypt"],
+    link: "https://github.com/Jaychafekar/pinevox-platform",
+    demo: "https://jaychafekar.github.io/cdr-dashboard",
+    highlights: ["React + Recharts analytics dashboard", "Node.js + Express REST API", "JWT auth with bcrypt password hashing", "Built during London Success Academy internship"],
+    year: "2026",
+  },
   {
     title: "PixelProof",
     subtitle: "Deepfake Detection & Verification Platform",
@@ -250,6 +273,13 @@ function ProjectModal({ project, open, onClose }: { project: typeof PROJECTS[0] 
                   <Github className="w-4 h-4 mr-2" /> View Repository
                 </a>
               </Button>
+              {project.demo && (
+                <Button asChild variant="outline" size="lg" className="rounded-full bg-transparent border-white/20 text-foreground hover:bg-white/5" data-testid={`button-demo-${project.title}`}>
+                  <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4 mr-2" /> Live Demo
+                  </a>
+                </Button>
+              )}
               <Button variant="outline" size="lg" className="rounded-full bg-transparent border-white/20 text-foreground hover:bg-white/5" onClick={onClose}>Close</Button>
             </div>
           </div>
@@ -519,7 +549,7 @@ export default function Portfolio() {
             <div className="flex items-start gap-10 mb-8">
               {[
                 { val: "3", label: "YEARS OF\nSTUDY" },
-                { val: "4", label: "PROJECTS\nCOMPLETED" },
+                { val: "5", label: "PROJECTS\nCOMPLETED" },
                 { val: "2", label: "COMPANIES\nWORKED AT" },
                 { val: "2:1", label: "PREDICTED\nDEGREE" },
               ].map(({ val, label }) => (
@@ -691,9 +721,20 @@ export default function Portfolio() {
                   >
                     <Github className="w-3.5 h-3.5" /> GitHub
                   </a>
-                  <span className="flex items-center gap-1.5 text-xs font-mono text-white/30 border border-white/5 px-3 py-1.5 rounded-full cursor-default">
-                    <ExternalLink className="w-3.5 h-3.5" /> Demo coming soon
-                  </span>
+                  {project.demo ? (
+                    <a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs font-mono text-white/60 hover:text-white border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-full transition-all"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" /> Live Demo
+                    </a>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-xs font-mono text-white/30 border border-white/5 px-3 py-1.5 rounded-full cursor-default">
+                      <ExternalLink className="w-3.5 h-3.5" /> Demo coming soon
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
