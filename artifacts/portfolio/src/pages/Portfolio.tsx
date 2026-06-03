@@ -272,27 +272,31 @@ function ContactForm() {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
-    if (!formspreeId) {
-      await new Promise((r) => setTimeout(r, 800));
-      setStatus("success");
-      setForm({ name: "", email: "", message: "" });
-      return;
-    }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-      const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      const res = await fetch("https://formsubmit.co/ajax/jaychafekar312003@gmail.com", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: "New message from your portfolio",
+          _template: "table",
+          _captcha: "false",
+        }),
+        signal: controller.signal,
       });
       if (res.ok) { setStatus("success"); setForm({ name: "", email: "", message: "" }); }
       else setStatus("error");
     } catch { setStatus("error"); }
+    finally { clearTimeout(timeout); }
   }, [form]);
 
   if (status === "success") {
     return (
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} role="status" aria-live="polite"
         className="p-8 rounded-[22px] border border-white/10 bg-[#111111]" data-testid="contact-success">
         <CheckCircle2 className="w-8 h-8 text-primary mb-4" />
         <h3 className="text-xl font-semibold mb-2 text-white">Message received</h3>
@@ -320,7 +324,7 @@ function ContactForm() {
       </div>
       
       {status === "error" && (
-        <div className="flex items-center gap-2 text-sm text-destructive" data-testid="contact-error">
+        <div role="alert" aria-live="assertive" className="flex items-center gap-2 text-sm text-destructive" data-testid="contact-error">
           <AlertCircle className="w-4 h-4 shrink-0" />
           Something went wrong. Please try emailing directly.
         </div>
@@ -456,11 +460,13 @@ export default function Portfolio() {
             <div className="absolute -top-12 -left-10 w-44 h-44 rounded-full border-[3px] border-dashed border-primary/70 pointer-events-none" />
             <div className="absolute top-[42%] -left-16 w-48 h-48 rounded-full border-[3px] border-dashed border-primary/40 pointer-events-none" />
 
-            <div className="relative z-10 w-full aspect-[4/5] rounded-[22px] bg-gradient-to-br from-primary to-orange-600 flex flex-col items-center justify-center overflow-hidden mb-5">
-              <div className="w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white font-black text-3xl shadow-lg">
-                JC
-              </div>
-              <span className="text-[11px] text-white/70 mt-3">Photo coming soon</span>
+            <div className="relative z-10 w-full aspect-[4/5] rounded-[22px] bg-gradient-to-br from-primary to-orange-600 overflow-hidden mb-5">
+              <img
+                src={`${import.meta.env.BASE_URL}profile.jpg`}
+                alt="Jay Chafekar"
+                className="w-full h-full object-cover"
+                loading="eager"
+              />
             </div>
 
             <h1 className="relative z-10 text-center text-[#111] font-black text-3xl tracking-tight mb-3">Jay Chafekar</h1>
@@ -545,7 +551,7 @@ export default function Portfolio() {
 
             <div className="mt-6 flex gap-4">
               <Button asChild size="lg" className="rounded-full bg-white text-[#111] hover:bg-gray-200 font-bold px-8">
-                <a href="/cv.pdf" download>Download CV</a>
+                <a href={`${import.meta.env.BASE_URL}cv.pdf`} download="Jay_Chafekar_CV.pdf">Download CV</a>
               </Button>
               <Button size="lg" variant="ghost" className="rounded-full text-white/60 hover:text-white px-6" onClick={() => scrollToSection("contact")}>
                 Get In Touch →
