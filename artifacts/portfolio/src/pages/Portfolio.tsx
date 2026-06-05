@@ -41,6 +41,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import certInternship from "@assets/Jay_Chafekar_Software_Web_App_Developer_Internship_Certificate_1780651131080.pdf";
 import certWebDesign from "@assets/WhatsApp_Image_2023-10-12_at_14.00.07_7dcdc44d_1780409546408.jpg";
 import certCpp from "@assets/WhatsApp_Image_2023-10-12_at_14.00.06_b20f7e45_1780409576625.jpg";
 import certWebDev from "@assets/WhatsApp_Image_2023-10-12_at_14.00.07_a711cfcc_1780409586571.jpg";
@@ -107,6 +108,7 @@ const EDUCATION = {
 };
 
 const CERTIFICATIONS = [
+  { name: "Developer (Software · App · Web) Internship", issuer: "London Success Academy", year: "2026", url: certInternship },
   { name: "Website Designing", issuer: "TechnoKraft Training & Solution", year: "2023", url: certWebDesign },
   { name: "Web Development", issuer: "TechnoKraft Training & Solution", year: "2023", url: certWebDev },
   { name: "C & C++ Programming", issuer: "TechnoKraft Training & Solution", year: "2022", url: certCpp },
